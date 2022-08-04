@@ -15,33 +15,44 @@ M5_PATH=/Data/Gem5/arm
 #
 
 all:
-	@echo "Build: X86 ARM MIPS POWER"
-	@echo "	Requires python3 >= 3.5 (recommend 3.7)"
-	@echo "	Do export M5_PATH=$(M5_PATH) first for ARM full system"
-	@echo "Part1: p1s p1t"
-	@echo "Part2: p2h p2s p2c p2m"
-	@echo "Part3: p3mc p3rc p3rt p3sr p3ts"
-	@echo "examples: armwj fs arm_bl term"
-	@echo "	xfs	X86 Linux Full System"
-	@echo "	armwj	ARM Linux Full System"
-	@echo "	fs_bl	X86 Full System for ARM Big-Littel Architecture"
-	@echo "	term	Connect dummy terminal to Full System"
-	@echo "	xmn	MobileNet v2"
-	@echo "ARM Research Starter Kit:"
-	@echo "	armse	ARM Starter SE Mode"
-	@echo "	armse2	ARM Starter SE Mode with 2 cores"
-	@echo "	armfs	ARM Linux Full System"
-	@echo "	arms	ARM Starter Kit"
-	@echo "	hpise	HPI Model SE Mode"
-	@echo "	hpise2	HPI Model SE Mode with 2 cores"
-	@echo "	hpisebm	HPI Model SE Mode Benchmarks"
-	@echo "	hpifs	HPI Model FS Mode"
-	@echo "	amn	MobileNet v2 with ARM HPI"
-	@echo "Memory System"
-	@echo "	MI	MI example"
-	@echo "nw: Network Interface Simulation"
+	 @echo "Build: X86 ARM MIPS POWER"
+	 @echo "	Requires python3 >= 3.5 (recommend 3.7)"
+	 @echo "	Do export M5_PATH=$(M5_PATH) first for ARM full system"
+	 @echo "Part1: p1s p1t"
+	 @echo "Part2: p2h p2s p2c p2m"
+	 @echo "Part3: p3mc p3rc p3rt p3sr p3ts"
+	 @echo "examples: armwj fs arm_bl term"
+	 @echo "	xfs	X86 Linux Full System"
+	 @echo "	armwj	ARM Linux Full System"
+	 @echo "	fs_bl	X86 Full System for ARM Big-Littel Architecture"
+	 @echo "	term	Connect dummy terminal to Full System"
+	 @echo "	xmn	MobileNet v2"
+	 @echo "ARM Research Starter Kit:"
+	 @echo "	armse	ARM Starter SE Mode"
+	 @echo "	armse2	ARM Starter SE Mode with 2 cores"
+	 @echo "	armfs	ARM Linux Full System"
+	 @echo "	arms	ARM Starter Kit"
+	 @echo "	hpise	HPI Model SE Mode"
+	 @echo "	hpise2	HPI Model SE Mode with 2 cores"
+	 @echo "	hpisebm	HPI Model SE Mode Benchmarks"
+	 @echo "	hpifs	HPI Model FS Mode"
+	 @echo "	amn	MobileNet v2 with ARM HPI"
+	 @echo "Memory System"
+	 @echo "	MI	MI example"
+	 @echo "nw: Network Interface Simulation"
+	 @echo "pu: PU DMA ENgine"
 
 include Makefile.nw
+
+#
+# Pu DMA model development
+#
+pu:
+	make X86
+	./build/X86/gem5.opt --outdir=./src/dev/pudma/m5out/X86 ./src/dev/pudma/pusim.py
+	echo "See src/dev/pudma/m5out/X86 directory"
+
+
 
 #
 # Build Commands

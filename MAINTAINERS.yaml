@@ -335,7 +335,7 @@ website:
     - Bobby Bruce <bbruce@ucdavis.edu>
     - Hoa Nguyen <hoanguyen@ucdavis.edu>
 
-puengine:
+pudma:
   desc: >-
     The gem5 Pu DMA engine
   status: maintained
