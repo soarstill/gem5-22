@@ -30,7 +30,8 @@
 
 #include "base/logging.hh"
 #include "base/trace.hh"
-#include "debug/PuEngine.hh"
+#include "debug/PUDMA.hh"
+#include "dev/pudma/pu_core.hh"
 
 namespace gem5
 {
@@ -40,13 +41,13 @@ PuEngine::PuEngine(const PuEngineParams &params) :
     // This is a C++ lambda. When the event is triggered, it will call the
     // processEvent() function. (this must be captured)
     event([this]{ processEvent(); }, name() + ".event"),
-    pucore(params.pucore),
+    pucore(params.pucore_object),
     // Note: This is not needed as you can *always* reference this->name()
     myName(params.name),
     latency(params.time_to_wait),
     timesLeft(params.number_of_fires)
 {
-    DPRINTF(PUDMA), "Created the PuEngine object\n");
+    DPRINTF(PUDMA, "Created the PuEngine object\n");
     panic_if(!pucore, "PuEngine must have a non-null PuCore object");
 }
 
@@ -61,11 +62,11 @@ void
 PuEngine::processEvent()
 {
     timesLeft--;
-    DPRINTF(PUDMA), "Hello world! Processing the event! %d left\n",
+    DPRINTF(PUDMA, "Hello world! Processing the event! %d left\n",
                           timesLeft);
 
     if (timesLeft <= 0) {
-        DPRINTF(PUDMA), "Done firing!\n");
+        DPRINTF(PUDMA, "Done firing!\n");
         pucore->compute(myName);
     } else {
         schedule(event, curTick() + latency);

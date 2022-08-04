@@ -27,7 +27,7 @@
 
 Import('*')
 
-SimObject('PuDma.py', sim_objects=['PuEngine', 'PuCore'])
+SimObject('PuEngine.py', sim_objects=['PuEngine', 'PuCore'])
 
 Source('pu_engine.cc')
 Source('pu_core.cc')

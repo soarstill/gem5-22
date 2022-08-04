@@ -94,6 +94,10 @@ process.cmd = [binary]
 system.cpu.workload = process
 system.cpu.createThreads()
 
+# for test H.S.Song Aug. 2022
+system.puengine = PuEngine()
+system.puengine.pucore_object = PuCore(buffer_size = '200B')
+
 # set up the root SimObject and start the simulation
 root = Root(full_system = False, system = system)
 # instantiate all of the objects we've created above

@@ -28,16 +28,6 @@
 from m5.params import *
 from m5.SimObject import SimObject
 
-class PuEngine(SimObject):
-    type = 'PuEngine'
-    cxx_header = "dev/pudma/pu_engine.hh"
-    cxx_class = 'gem5::PuEngine'
-
-    time_to_wait = Param.Latency("Time before firing the event")
-    number_of_fires = Param.Int(1, "Number of times to fire the event before "
-                                   "goodbye")
-
-    pucore = Param.PuCore("A PuCore object")
 
 class PuCore(SimObject):
     type = 'PuCore'
@@ -48,3 +38,14 @@ class PuCore(SimObject):
                                    "Size of buffer to fill with goodbye")
     write_bandwidth = Param.MemoryBandwidth('100MB/s', "Bandwidth to fill "
                                             "the buffer")
+
+
+class PuEngine(SimObject):
+    type = 'PuEngine'
+    cxx_header = "dev/pudma/pu_engine.hh"
+    cxx_class = 'gem5::PuEngine'
+
+    time_to_wait = Param.Latency("Time before firing the event")
+    number_of_fires = Param.Int(1, "Number of times to fire the event before "
+                                   "goodbye")
+    pucore_object = Param.PuCore("A PuCore object")

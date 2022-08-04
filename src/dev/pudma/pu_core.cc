@@ -29,19 +29,19 @@
 #include "dev/pudma/pu_core.hh"
 
 #include "base/trace.hh"
-#include "debug/PuEngine.hh"
+#include "debug/PUDMA.hh"
 #include "sim/sim_exit.hh"
 
 namespace gem5
 {
 
-PuCore::PuCore(const GoodbyeObjectParams &params) :
+PuCore::PuCore(const PuCoreParams &params) :
     SimObject(params), event([this]{ processEvent(); }, name() + ".event"),
     bandwidth(params.write_bandwidth), bufferSize(params.buffer_size),
     buffer(nullptr), bufferUsed(0)
 {
     buffer = new char[bufferSize]();
-    DPRINTF(PUDMA), "Created the goodbye object\n");
+    DPRINTF(PUDMA, "Created the goodbye object\n");
 }
 
 PuCore::~PuCore()
@@ -52,7 +52,7 @@ PuCore::~PuCore()
 void
 PuCore::processEvent()
 {
-    DPRINTF(PUDMA), "Processing the event!\n");
+    DPRINTF(PUDMA, "Processing the event!\n");
 
     // Actually do the "work" of the event
     fillBuffer();
@@ -61,7 +61,7 @@ PuCore::processEvent()
 void
 PuCore::compute(std::string other_name)
 {
-    DPRINTF(PUDMA), "Saying goodbye to %s\n", other_name);
+    DPRINTF(PUDMA, "Saying goodbye to %s\n", other_name);
 
     message = "Goodbye " + other_name + "!! ";
 
@@ -88,11 +88,11 @@ PuCore::fillBuffer()
 
     if (bufferUsed < bufferSize - 1) {
         // Wait for the next copy for as long as it would have taken
-        DPRINTF(PUDMA), "Scheduling another fillBuffer in %d ticks\n",
+        DPRINTF(PUDMA, "Scheduling another fillBuffer in %d ticks\n",
                 bandwidth * bytes_copied);
         schedule(event, curTick() + bandwidth * bytes_copied);
     } else {
-        DPRINTF(PUDMA), "Goodbye done copying!\n");
+        DPRINTF(PUDMA, "Goodbye done copying!\n");
         // Be sure to take into account the time for the last bytes
         exitSimLoop(buffer, 0, curTick() + bandwidth * bytes_copied);
     }
