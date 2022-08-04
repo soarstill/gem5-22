@@ -47,11 +47,15 @@ include Makefile.nw
 #
 # Pu DMA model development
 #
-pu:
-	make X86
+
+pu: 
 	./build/X86/gem5.opt --outdir=./src/dev/pudma/m5out/X86 ./src/dev/pudma/pusim.py
 	echo "See src/dev/pudma/m5out/X86 directory"
 
+
+puarm: 
+	./build/ARM/gem5.opt --outdir=./src/dev/pudma/m5out/ARM ./src/dev/pudma/pusim.py
+	echo "See src/dev/pudma/m5out/ARM directory"
 
 
 #

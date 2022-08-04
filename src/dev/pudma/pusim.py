@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2022 H.S.Song
+# Copyright (c) 2017 Jason Lowe-Power
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,11 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+""" This file creates a barebones system and executes 'hello', a simple Hello
+World application. Adds a simple memobj between the CPU and the membus.
 
+This config file assumes that the x86 ISA was built.
+"""
 
 # import the m5 (gem5) library created when gem5 is built
 import m5
@@ -42,18 +46,27 @@ system.clk_domain.voltage_domain = VoltageDomain()
 
 # Set up the system
 system.mem_mode = 'timing'               # Use timing accesses
-# Create an address range
-system.mem_ranges = [AddrRange('512MB')]
+system.mem_ranges = [AddrRange('512MB')] # Create an address range
 
 # Create a simple CPU
 system.cpu = TimingSimpleCPU()
 
-# Create a memory bus, a system crossbar, in this case
+system.memobj = SimpleMemobj()
+
+# Create the PuDMA object
+system.puengine = PuEngine(time_to_wait = '10ns')
+system.puengine.pucore_object = PuCore()
+
+# Hook the CPU ports up to the cache
+system.cpu.icache_port = system.memobj.inst_port
+system.cpu.dcache_port = system.memobj.data_port
+
+# Create a memory bus, a coherent crossbar, in this case
 system.membus = SystemXBar()
 
-# Hook the CPU ports up to the membus
-system.cpu.icache_port = system.membus.cpu_side_ports
-system.cpu.dcache_port = system.membus.cpu_side_ports
+# Connect the memobj
+system.memobj.mem_side = system.membus.cpu_side_ports
+
 
 # create the interrupt controller for the CPU and connect to the membus
 system.cpu.createInterruptController()
@@ -74,6 +87,10 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 # Connect the system up to the membus
 system.system_port = system.membus.cpu_side_ports
 
+# Create a process for a simple "Hello World" application
+process = Process()
+# Set the command
+
 # get ISA for the binary to run.
 isa = str(m5.defines.buildEnv['TARGET_ISA']).lower()
 
@@ -85,18 +102,7 @@ binary = os.path.join(thispath, '../../../',
 
 system.workload = SEWorkload.init_compatible(binary)
 
-# Create a process for a simple "Hello World" application
-process = Process()
-# Set the command
-# cmd is a list which begins with the executable (like argv)
-process.cmd = [binary]
-# Set the cpu to use the process as its workload and create thread contexts
-system.cpu.workload = process
 system.cpu.createThreads()
-
-# for test H.S.Song Aug. 2022
-system.puengine = PuEngine()
-system.puengine.pucore_object = PuCore(buffer_size = '200B')
 
 # set up the root SimObject and start the simulation
 root = Root(full_system = False, system = system)
