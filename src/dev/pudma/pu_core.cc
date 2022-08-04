@@ -61,9 +61,9 @@ PuCore::processEvent()
 void
 PuCore::compute(std::string other_name)
 {
-    DPRINTF(PUDMA, "Saying goodbye to %s\n", other_name);
+    DPRINTF(PUDMA, "Saying compute to %s\n", other_name);
 
-    message = "Goodbye " + other_name + "!! ";
+    message = "Computing " + other_name + "!! ";
 
     // Kick off the the first buffer fill. If it can't fill the whole buffer
     // because of a limited bandwidth, then this function will schedule another
