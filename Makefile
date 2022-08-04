@@ -48,14 +48,16 @@ include Makefile.nw
 # Pu DMA model development
 #
 
-pu: 
-	./build/X86/gem5.opt --outdir=./src/dev/pudma/m5out/X86 ./src/dev/pudma/pusim.py
-	echo "See src/dev/pudma/m5out/X86 directory"
+TEST_PROG_X86 = "./tests/test-progs/hello/bin/x86/linux/hello"
 
+puse:
+	./build/X86/gem5.opt --debug-flags=PUDMA,DRAM --outdir=./src/dev/pudma/m5out/X86/puse ./configs/pudma/puse.py --cmd $(TEST_PROG_X86)
+	@echo "See src/dev/pudma/m5out/X86/pusim directory\n\n"
 
-puarm: 
-	./build/ARM/gem5.opt --outdir=./src/dev/pudma/m5out/ARM ./src/dev/pudma/pusim.py
-	echo "See src/dev/pudma/m5out/ARM directory"
+pusim: 
+	./build/X86/gem5.opt --outdir=./src/dev/pudma/m5out/X86/pusim ./configs/pudma/pusim.py
+	@echo "See src/dev/pudma/m5out/X86/pusim directory\n\n"
+
 
 
 #
