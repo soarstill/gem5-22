@@ -1,0 +1,50 @@
+
+nw : 
+	@ echo "ruby_random_test.py : comparing network protocols of Gem5 simulator "
+	@ echo "	* Build gem5 for target protocol"
+	@ echo "	pro1 : MESI_Two_Level"
+	@ echo "	pro2 : MESI_Three_Level"
+	@ echo "	pro3 : MI_example"
+	@ echo "	pro4 : MOESI_hammer"
+	@ echo "	pro5 : MSI"
+	@ echo "-----------------------------------------------------------------------------"
+	@ echo " CPUS=?? cb : 1|2|4|8|16|32 number of cpus in Crossbar Topology"
+	@ echo " CPUS=?? me : 1|2|4|8|16|32 number of cpus, dirs, mesh rows in Mesh_XY Topology"
+
+M5_PATH = /Data/Gem5/aarch-system=20170616
+#
+# Protocol commands
+#
+pro1 : 
+	scons RUBY=TRUE PROTOCOL=MESI_Two_Level build/X86/gem5.opt
+
+pro2 : 
+	scons RUBY=TRUE PROTOCOL=MESI_Three_Level build/X86/gem5.opt
+
+pro3 : 
+	scons RUBY=TRUE PROTOCOL=MI_example build/X86/gem5.opt
+
+pro4 :
+	scons RUBY=TRUE PROTOCOL=MOESI_hammer build/X86/gem5.opt
+
+pro5 : 
+	scons RUBY=TRUE PROTOCOL=MSI build/X86/gem5.opt
+
+#RUBY Commands
+#Topology = Crossbar
+CPUS=1
+
+cb : output
+	cd gem5; time ./build/X86/gem5.opt \
+	    --outdir=output/Crossbar_cpu$(CPUS)\
+	    configs/example/ruby_random_test.py --num-cpus=$(CPUS)
+
+#Topology = Mesh_XY
+
+me : output
+	cd gem5; time ./build/X86/gem5.opt \
+		--outdir=output/Mesh_cpu$(CPUS)\
+		configs/example/ruby_random_test.py --num-cpus=$(CPUS) --num-dirs=$(CPUS) --topology=Mesh_XY --mesh-rows=$(CPUS)
+
+output : 
+	mkdir -p output
