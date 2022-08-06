@@ -67,18 +67,17 @@ pu: $(PUTEST_X86)
 	@echo "See $(M5OUT_PUTEST)/X86 directory\n\n"
 
 pusim: 
-	./build/X86/gem5.opt --outdir=./m5out/pudma/puse/pusim \
-		--outdir=$(M5OUT_PUTEST)/pusim \
-		configs/pudma/pusim.py
-	@echo "See $(M5OUT_PUTEST)/pusim\n\n"
+	./build/X86/gem5.opt --outdir=./m5out/pudma/puse/pusimple \
+		--outdir=$(M5OUT_PUTEST)/pusimple \
+		configs/pudma/pusimle.py
+	@echo "See $(M5OUT_PUTEST)/pusimple\n\n"
 
 git-soarstill:
 	git config --global user.name soarstill
 	git config --global user.email soarstill@gmail
 	git config --global credential.helper cache
 	git config --global push.default simple
-	git login
-	git remote
+
 
 
 
