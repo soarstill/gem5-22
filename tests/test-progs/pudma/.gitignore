@@ -1,9 +1,13 @@
 bin/arm/linux/hello32-static
 bin/arm/linux/hello64-static
+bin/arm/linux/putest32-static
+bin/arm/linux/putest64-static
 
 bin/x86/linux/hello32-static
 bin/x86/linux/hello64-static
 bin/x86/linux/hello64-dynamic
+bin/x86/linux/putest32-static
+bin/x86/linux/putest64-static
 
 src/dockcross*
 src/*-dynamic

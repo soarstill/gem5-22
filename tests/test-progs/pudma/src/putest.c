@@ -28,10 +28,27 @@
 
 #include <stdio.h>
 
+#define REG32(x) (*((volatile unsigned int *)(x)))
+
+#define DMA_ADDRS   REG32(0xC0000000)
+#define DMA_ADDRD   REG32(0xC0000004)
+#define DMA_SIZE    REG32(0xC0000008)
+#define DMA_CMD     REG32(0xC000000C)
+#define DMA_STATUS  REG32(0xC0000010)
+
+void testDma()
+{
+    DMA_CMD = 0x30;
+    unsigned int value = DMA_STATUS;
+}
+
 int main(int argc, char* argv[])
 {
 
     printf("Hello world!\n");
 
+    testDma();
+
     return 0;
 }
+

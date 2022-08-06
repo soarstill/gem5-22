@@ -5,7 +5,9 @@
 #
 # SCONS_CMD=scons
 # for Gem5 ver. >= 21
-SCONS_CMD=python3 /Tools/scons/scripts/scons.py
+#SCONS_CMD=python3 /Tools/scons/scripts/scons.py
+SCONS_CMD=scons
+
 N_CPU=4
 M5_PATH=/Data/Gem5/arm
 # M5_PATH=/Data/Gem5/aarch-system-201700616
@@ -47,16 +49,36 @@ include Makefile.nw
 #
 # Pu DMA model development
 #
+PUTEST = putest
+PUTEST_X86 = ./tests/test-progs/pudma/bin/x86/linux/$(PUTEST)32-static
+PUTEST_ARM = ./tests/test-progs/pudma/bin/arm/linux/$(PUTEST)32-static
+PUTEST_SRC = ./tests/test-progs/pudma/src
 
-TEST_PROG_X86 = "./tests/test-progs/hello/bin/x86/linux/hello"
+M5OUT_PUTEST = "./m5out/pudma/"
+ 
+$(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
+	cd $(PUTEST_SRC); make -f Makefile.x86
 
-puse:
-	./build/X86/gem5.opt --debug-flags=PUDMA,DRAM --outdir=./src/dev/pudma/m5out/X86/puse ./configs/pudma/puse.py --cmd $(TEST_PROG_X86)
-	@echo "See src/dev/pudma/m5out/X86/pusim directory\n\n"
+pu: $(PUTEST_X86)
+	./build/X86/gem5.opt \
+		--debug-flags=PUDMA \
+	   	--outdir=$(M5OUT_PUTEST)/puse \
+		configs/pudma/puse.py --cmd=$(PUTEST_X86)
+	@echo "See $(M5OUT_PUTEST)/X86 directory\n\n"
 
 pusim: 
-	./build/X86/gem5.opt --outdir=./src/dev/pudma/m5out/X86/pusim ./configs/pudma/pusim.py
-	@echo "See src/dev/pudma/m5out/X86/pusim directory\n\n"
+	./build/X86/gem5.opt --outdir=./m5out/pudma/puse/pusim \
+		--outdir=$(M5OUT_PUTEST)/pusim \
+		configs/pudma/pusim.py
+	@echo "See $(M5OUT_PUTEST)/pusim\n\n"
+
+git-soarstill:
+	git config --global user.name soarstill
+	git config --global user.email soarstill@gmail
+	git config --global credential.helper cache
+	git config --global push.default simple
+	git login
+	git remote
 
 
 
@@ -89,7 +111,7 @@ p1t:
 
 # Part 2
 p2h:
-	./build/X86/gem5.opt configs/learning_gem5/part2/hello_goodbye.py
+	./build/X86/gem5.opt configs/learning_gem5/part2/putest_goodbye.py
 
 p2s:
 	./build/X86/gem5.opt configs/learning_gem5/part2/run_simple.py
@@ -129,36 +151,36 @@ xmn:
 #
 #	ARM Research Starter Kit
 # System Call Emulation Mode
-armse: tests/test-progs/hello/bin/arm/linux/hello
+armse: tests/test-progs/putest/bin/arm/linux/putest
 	./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
-		"tests/test-progs/hello/bin/arm/linux/hello"
+		"tests/test-progs/putest/bin/arm/linux/putest"
 
 # System Call Emulation Multi-Core Mode
-armse2: tests/test-progs/hello/bin/arm/linux/hello
+armse2: tests/test-progs/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
 		--num-cores 2 \
-		"tests/test-progs/hello/bin/arm/linux/hello" \
-		"tests/test-progs/hello/bin/arm/linux/hello"
+		"tests/test-progs/putest/bin/arm/linux/putest" \
+		"tests/test-progs/putest/bin/arm/linux/putest"
 
-armse4: tests/test-progs/hello/bin/arm/linux/hello
+armse4: tests/test-progs/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
 		--num-cores 4 \
-		"tests/test-progs/hello/bin/arm/linux/hello" \
-		"tests/test-progs/hello/bin/arm/linux/hello" \
-		"tests/test-progs/hello/bin/arm/linux/hello" \
-		"tests/test-progs/hello/bin/arm/linux/hello"
+		"tests/test-progs/putest/bin/arm/linux/putest" \
+		"tests/test-progs/putest/bin/arm/linux/putest" \
+		"tests/test-progs/putest/bin/arm/linux/putest" \
+		"tests/test-progs/putest/bin/arm/linux/putest"
 
 # HPI Model SE Mode
-hpise: tests/test-progs/hello/bin/arm/linux/hello
+hpise: tests/test-progs/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" --num-cores 1 \
-		"tests/test-progs/hello/bin/arm/linux/hello"
+		"tests/test-progs/putest/bin/arm/linux/putest"
 
-hpise2: tests/test-progs/hello/bin/arm/linux/hello
+hpise2: tests/test-progs/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" --num-cores 2 \
-		"tests/test-progs/hello/bin/arm/linux/hello" "tests/test-progs/hello/bin/arm/linux/hello"
+		"tests/test-progs/putest/bin/arm/linux/putest" "tests/test-progs/putest/bin/arm/linux/putest"
 
-tests/test-progs/hello/bin/arm/linux/hello:
-	cd tests/test-progs/hello/src; make -f Makefile.arm
+tests/test-progs/putest/bin/arm/linux/putest:
+	cd tests/test-progs/putest/src; make -f Makefile.arm
 
 BM='Quicksort'
 

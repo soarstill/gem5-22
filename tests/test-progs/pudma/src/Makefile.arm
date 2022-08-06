@@ -1,10 +1,22 @@
-all: hello64-static hello32-static
+SRCS = putest.c
+OBJS = putest.o
 
-hello64-static: hello.c dockcross-arm64
-	./dockcross-arm64 bash -c '$$CC hello.c -o hello64-static -static'
+TARGET = putest
 
-hello32-static: hello.c dockcross-armv7
-	./dockcross-armv7 bash -c '$$CC hello.c -o hello32-static -static'
+TARGET32 = $(TARGET)32-static
+TARGET64 = $(TARGET)64-static
+
+BIN = ../bin/arm/linux/
+
+all: $(TARGET32) $(TARGET64)
+
+$(TARGET64): $(SRCS) dockcross-arm64
+	./dockcross-arm64 bash -c '$$CC $(SRCS) -o $@ -static'
+	mv $@ $(BIN)
+
+$(TARGET32): $(SRCS) dockcross-armv7
+	./dockcross-armv7 bash -c '$$CC $(SRCS) -o $@ -static'
+	mv $@ $(BIN)
 
 dockcross-arm64:
 	docker run --rm dockcross/linux-arm64 > ./dockcross-arm64
@@ -15,4 +27,4 @@ dockcross-armv7:
 	chmod +x ./dockcross-armv7
 
 clean:
-	rm -f dockcross* hello64-static hello32-static
+	rm -f dockcross* $(TARGET32) $(TARGET64) $(BIN)/*
