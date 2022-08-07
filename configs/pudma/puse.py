@@ -263,14 +263,12 @@ else:
     MemConfig.config_mem(args, system)
     config_filesystem(system, args)
 
+
 system.workload = SEWorkload.init_compatible(mp0_path)
 
 if args.wait_gdb:
     system.workload.wait_for_remote_gdb = True
 
-# Added by H.S.Song, Aug. 2022
-system.puengine = PuEngine(time_to_wait = '1000ns')
-system.puengine.pucore_object = PuCore()
 
 root = Root(full_system = False, system = system)
 Simulation.run(args, root, system, FutureClass)

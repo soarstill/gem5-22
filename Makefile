@@ -50,11 +50,11 @@ include Makefile.nw
 # Pu DMA model development
 #
 PUTEST = putest
-PUTEST_X86 = ./tests/test-progs/pudma/bin/x86/linux/$(PUTEST)32-static
-PUTEST_ARM = ./tests/test-progs/pudma/bin/arm/linux/$(PUTEST)32-static
-PUTEST_SRC = ./tests/test-progs/pudma/src
+PUTEST_X86 = ./tests/pudma/bin/x86/linux/$(PUTEST)32-static
+PUTEST_ARM = ./tests/pudma/bin/arm/linux/$(PUTEST)32-static
+PUTEST_SRC = ./tests/pudma/src
 
-M5OUT_PUTEST = "./m5out/pudma/"
+M5OUT_PUTEST = ./m5out/pudma
  
 $(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
 	cd $(PUTEST_SRC); make -f Makefile.x86
@@ -64,13 +64,15 @@ pu: $(PUTEST_X86)
 		--debug-flags=PUDMA \
 	   	--outdir=$(M5OUT_PUTEST)/puse \
 		configs/pudma/puse.py --cmd=$(PUTEST_X86)
-	@echo "See $(M5OUT_PUTEST)/X86 directory\n\n"
+	@echo "See $(M5OUT_PUTEST)/puse directory\n\n"
 
-pusim: 
-	./build/X86/gem5.opt --outdir=./m5out/pudma/puse/pusimple \
-		--outdir=$(M5OUT_PUTEST)/pusimple \
-		configs/pudma/pusimle.py
-	@echo "See $(M5OUT_PUTEST)/pusimple\n\n"
+
+pusimple: $(PUTEST_X86)
+	./build/X86/gem5.opt \
+		--debug-flags=PUDMA \
+	   	--outdir=$(M5OUT_PUTEST)/pusimple \
+		configs/pudma/pusimple.py
+	@echo "See $(M5OUT_PUTEST)/pusimple directory\n\n"
 
 git-soarstill:
 	git config --global user.name soarstill
@@ -150,36 +152,36 @@ xmn:
 #
 #	ARM Research Starter Kit
 # System Call Emulation Mode
-armse: tests/test-progs/putest/bin/arm/linux/putest
+armse: tests/putest/bin/arm/linux/putest
 	./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
-		"tests/test-progs/putest/bin/arm/linux/putest"
+		"tests/putest/bin/arm/linux/putest"
 
 # System Call Emulation Multi-Core Mode
-armse2: tests/test-progs/putest/bin/arm/linux/putest
+armse2: tests/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
 		--num-cores 2 \
-		"tests/test-progs/putest/bin/arm/linux/putest" \
-		"tests/test-progs/putest/bin/arm/linux/putest"
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest"
 
-armse4: tests/test-progs/putest/bin/arm/linux/putest
+armse4: tests/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
 		--num-cores 4 \
-		"tests/test-progs/putest/bin/arm/linux/putest" \
-		"tests/test-progs/putest/bin/arm/linux/putest" \
-		"tests/test-progs/putest/bin/arm/linux/putest" \
-		"tests/test-progs/putest/bin/arm/linux/putest"
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest"
 
 # HPI Model SE Mode
-hpise: tests/test-progs/putest/bin/arm/linux/putest
+hpise: tests/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" --num-cores 1 \
-		"tests/test-progs/putest/bin/arm/linux/putest"
+		"tests/putest/bin/arm/linux/putest"
 
-hpise2: tests/test-progs/putest/bin/arm/linux/putest
+hpise2: tests/putest/bin/arm/linux/putest
 	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" --num-cores 2 \
-		"tests/test-progs/putest/bin/arm/linux/putest" "tests/test-progs/putest/bin/arm/linux/putest"
+		"tests/putest/bin/arm/linux/putest" "tests/putest/bin/arm/linux/putest"
 
-tests/test-progs/putest/bin/arm/linux/putest:
-	cd tests/test-progs/putest/src; make -f Makefile.arm
+tests/putest/bin/arm/linux/putest:
+	cd tests/putest/src; make -f Makefile.arm
 
 BM='Quicksort'
 

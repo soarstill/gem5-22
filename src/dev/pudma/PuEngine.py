@@ -39,7 +39,6 @@ class PuCore(SimObject):
     write_bandwidth = Param.MemoryBandwidth('100MB/s', "Bandwidth to fill "
                                             "the buffer")
 
-
 class PuEngine(SimObject):
     type = 'PuEngine'
     cxx_header = "dev/pudma/pu_engine.hh"
