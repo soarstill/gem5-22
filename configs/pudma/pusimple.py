@@ -84,7 +84,7 @@ system.system_port = system.membus.cpu_side_ports
 
 # Added by H.S.Song 2022
 system.puengine = PuEngine(time_to_wait = '10ns')
-system.pucore_object = PuCore()
+system.puengine.pucore_object = PuCore()
 
 # get ISA for the binary to run.
 isa = str(m5.defines.buildEnv['TARGET_ISA']).lower()
