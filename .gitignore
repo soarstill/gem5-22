@@ -37,3 +37,6 @@ tests/pudma/putest64-static
 tests/pudma/bin/x86/linux/putest64-dynamic
 tests/pudma/putest64-dynamic
 tests/pudma/bin/x86/linux/putest64-dynamic
+tests/pudma/bin/x86/linux/putest64-dynamic
+tests/pudma/src/putest.c
+tests/pudma/bin/x86/linux/putest64-dynamic
