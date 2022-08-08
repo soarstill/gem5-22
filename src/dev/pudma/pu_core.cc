@@ -41,7 +41,7 @@ PuCore::PuCore(const PuCoreParams &params) :
     buffer(nullptr), bufferUsed(0)
 {
     buffer = new char[bufferSize]();
-    DPRINTF(PUDMA, "Created the goodbye object\n");
+    DPRINTF(PUDMA, "Created the PuCore object\n");
 }
 
 PuCore::~PuCore()
