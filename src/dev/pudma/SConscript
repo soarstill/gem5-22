@@ -27,10 +27,13 @@
 
 Import('*')
 
-SimObject('PuEngine.py', sim_objects=['PuEngine', 'PuCore'])
+SimObject('PuEngine.py', sim_objects=['PuEngine', 'PuCore', 'PuEngine2'])
 
 Source('pu_engine.cc')
 Source('pu_core.cc')
+Source('pu_engine2.cc')
 
 
 DebugFlag('PUDMA', "For PUDMA debug flag")
+DebugFlag('PuEngine2', "For PuEngine2 debug flag")
+
