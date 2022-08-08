@@ -62,7 +62,7 @@ void
 PuEngine::processEvent()
 {
     timesLeft--;
-    DPRINTF(PUDMA, "Hello world! Processing the event! %d left\n",
+    DPRINTF(PUDMA, "PuEngine: Processing the event! %d left\n",
                           timesLeft);
 
     if (timesLeft <= 0) {

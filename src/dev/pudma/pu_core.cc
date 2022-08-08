@@ -52,7 +52,7 @@ PuCore::~PuCore()
 void
 PuCore::processEvent()
 {
-    DPRINTF(PUDMA, "Processing the event!\n");
+    DPRINTF(PUDMA, "PuCore::processing the event!\n");
 
     // Actually do the "work" of the event
     fillBuffer();
@@ -61,7 +61,7 @@ PuCore::processEvent()
 void
 PuCore::compute(std::string other_name)
 {
-    DPRINTF(PUDMA, "Saying compute to %s\n", other_name);
+    DPRINTF(PUDMA, "PuCore: Start compute to %s\n", other_name);
 
     message = "Computing " + other_name + "!! ";
 
@@ -88,11 +88,11 @@ PuCore::fillBuffer()
 
     if (bufferUsed < bufferSize - 1) {
         // Wait for the next copy for as long as it would have taken
-        DPRINTF(PUDMA, "Scheduling another fillBuffer in %d ticks\n",
+        DPRINTF(PUDMA, "PuCore: Scheduling another fillBuffer in %d ticks\n",
                 bandwidth * bytes_copied);
         schedule(event, curTick() + bandwidth * bytes_copied);
     } else {
-        DPRINTF(PUDMA, "Goodbye done copying!\n");
+        DPRINTF(PUDMA, "PuCore: done copying!\n\n");
         // Be sure to take into account the time for the last bytes
         exitSimLoop(buffer, 0, curTick() + bandwidth * bytes_copied);
     }

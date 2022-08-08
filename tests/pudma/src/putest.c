@@ -36,18 +36,20 @@
 #define DMA_CMD     REG32(0x1000000C)
 #define DMA_STATUS  REG32(0xC0000010)
 
-/**
 void testDma()
 {
     DMA_CMD = 0x30;
     unsigned int value = DMA_STATUS;
 }
-*/
+
+int x;
+
 
 int main(int argc, char* argv[])
 {
 
     printf("Hello world! - PU\n");
+    printf("VA = %#x\n", &x);
 
 
     return 0;

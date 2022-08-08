@@ -61,15 +61,15 @@ $(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
 
 pu: $(PUTEST_X86)
 	./build/X86/gem5.opt \
-		--debug-flags=PUDMA \
 	   	--outdir=$(M5OUT_PUTEST)/puse \
 		configs/pudma/puse.py --cmd=$(PUTEST_X86)
 	@echo "See $(M5OUT_PUTEST)/puse directory\n\n"
 
+#		--debug-flags=PUDMA \
+#		--debug-flags=PUDMA \
 
 pusimple: $(PUTEST_X86)
 	./build/X86/gem5.opt \
-		--debug-flags=PUDMA \
 	   	--outdir=$(M5OUT_PUTEST)/pusimple \
 		configs/pudma/pusimple.py
 	@echo "See $(M5OUT_PUTEST)/pusimple directory\n\n"
@@ -86,7 +86,7 @@ git-soarstill:
 #
 # Build Commands
 #
-X86:
+X86: 
 	$(SCONS_CMD) build/X86/gem5.opt -j8
 
 ARM:
