@@ -13,6 +13,10 @@
         "ratio": "cpp",
         "stdexcept": "cpp",
         "regex": "cpp",
-        "tuple": "cpp"
-    }
+        "tuple": "cpp",
+        "stdio.h": "c"
+    },
+    "python.analysis.extraPaths": [
+        "./build/X86/python"
+    ]
 }

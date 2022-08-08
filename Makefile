@@ -59,18 +59,33 @@ M5OUT_PUTEST = ./m5out/pudma
 $(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
 	cd $(PUTEST_SRC); make -f Makefile.x86
 
+pumem2: $(PUTEST_X86)
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem2\
+		--debug-flags=PuEngine2 \
+		configs/pudma/pumem2.py
+	@echo "See $(M5OUT_PUTEST)/pumem2 directory\n\n"
+
+pumem: $(PUTEST_X86)
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem \
+		--debug-flags=PUDMA \
+		configs/pudma/pumem.py
+	@echo "See $(M5OUT_PUTEST)/pumem directory\n\n"
+
+git-soarstill:
 pu: $(PUTEST_X86)
 	./build/X86/gem5.opt \
 	   	--outdir=$(M5OUT_PUTEST)/puse \
+		--debug-flags=PUDMA \
 		configs/pudma/puse.py --cmd=$(PUTEST_X86)
 	@echo "See $(M5OUT_PUTEST)/puse directory\n\n"
 
-#		--debug-flags=PUDMA \
-#		--debug-flags=PUDMA \
 
 pusimple: $(PUTEST_X86)
 	./build/X86/gem5.opt \
 	   	--outdir=$(M5OUT_PUTEST)/pusimple \
+		--debug-flags=PUDMA \
 		configs/pudma/pusimple.py
 	@echo "See $(M5OUT_PUTEST)/pusimple directory\n\n"
 
