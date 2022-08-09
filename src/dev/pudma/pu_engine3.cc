@@ -46,10 +46,11 @@ namespace gem5
 PuEngine3::PuEngine3(const Params &p) :
     BasicPioDevice(p, p.pio_size),
     _devname(p.devicename),
-    _pucore3(p.pucore3),
-    _pioAddr(p.pio_addr),
     _pioSize(p.pio_size),
-    _pioLatency(p.pio_latency)
+    _pioLatency(p.pio_latency),
+    _pioAddr(p.pio_addr),
+    _pucore3(p.pucore3)
+
 {
     DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", _devname);
 }
@@ -57,55 +58,37 @@ PuEngine3::PuEngine3(const Params &p) :
 Tick
 PuEngine3::read(PacketPtr pkt)
 {
+// TODO : implement
 //   _super::read(pkt);
-    DPRINTF(PuEngine3, "PuEngine3: read(%#x) sz=%#x requested\n",
+    DPRINTF(PuEngine3, "PuEngine3: read(%#x) sz=%d requested\n",
                     pkt->getAddr(), pkt->getSize());
-    //panic("Device %s.read() not imlpmented\n", devname);
+    panic("Device %s.read() not imlpmented\n", name());
 
-   return _pioLatency;
+    return _pioLatency;
 }
 
 Tick
 PuEngine3::write(PacketPtr pkt)
 {
+// TODO : implement
 //   _super::read(pkt);
-    DPRINTF(PuEngine3, "PuEngine3: write(%#x) sz=%#x requested\n",
+    DPRINTF(PuEngine3, "PuEngine3: write(%#x) sz=%d requested\n",
                     pkt->getAddr(), pkt->getSize());
 
-// panic("Device %s. write() not imlpmented\n", devname);
+    panic("Device %s. write() not imlpmented\n", name());
 
-   return _pioLatency;
+    return _pioLatency;
 }
 
 
 AddrRangeList
 PuEngine3::getAddrRanges() const
 {
-
-
-    /*
-    if (_ranges.empty()) {
-        assert(_pioSize != 0);
-
-        uint64_t start = X86PIO_BASE_ADDR + _pioAddr;
-        uint64_t end   = X86PIO_BASE_ADDR + _pioAddr + _pioSize - 1;
-
-        _ranges.push_back(RangeSize(start, _pioSize));
-
-        DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
-                _devname, _ranges.front().to_string());
-    }
-
-    return _ranges;
-    */
     AddrRangeList ranges;
 
     assert(_pioSize != 0);
 
-
     uint64_t start = X86PIO_BASE_ADDR + _pioAddr;
-    uint64_t end   = X86PIO_BASE_ADDR + _pioAddr + _pioSize - 1;
-
     ranges.push_back(RangeSize(start, _pioSize));
 
     DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
@@ -113,4 +96,5 @@ PuEngine3::getAddrRanges() const
 
     return ranges;
 }
+
 } // namespace gem5
