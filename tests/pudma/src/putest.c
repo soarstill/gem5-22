@@ -40,16 +40,18 @@
 #include <string.h>
 #include <sys/io.h>
 
+typedef unsigned int uint32_t;
+
 typedef struct _DmaInfo
 {
-    float * pa;
-    float * pb;
-    float * pc;
-    unsigned int size;
-    unsigned int cmd;
+    uint32_t pa;
+    uint32_t pb;
+    uint32_t pc;
+    uint32_t size;
+    uint32_t cmd;
     // cmd = 0: just send info, 1: start compute,
     // 2: abort  3: report status
-    unsigned int status;
+    uint32_t status;
     // status 0: idle, 1: ready, 2: start-moving data,
     // 3: in-computing 4: moving to mem 5: DONE
 } DmaInfo;
@@ -97,22 +99,23 @@ int isEqual(DmaInfo *da, DmaInfo * db)
 void testPio1()
 {
     memset(&dmaInfo, 0, sizeof(dmaInfo));
+    memset(&dmaInfoRet, 0, sizeof(dmaInfoRet));
+    printDmaInfo(&dmaInfo);
 
-    dmaInfo.pa = &dataA[0];
-    dmaInfo.pb = &dataB[0];
-    dmaInfo.pc = &dataC[0];
-    dmaInfo.size = 1024;
-    dmaInfo.cmd = 0;
+    dmaInfo.pa = (uint32_t) &dataA[0];
+    dmaInfo.pb = (uint32_t) &dataB[0];
+    dmaInfo.pc = (uint32_t) &dataC[0];
+    dmaInfo.size = (uint32_t) 1024;
+    dmaInfo.cmd = (uint32_t) 0;
     // 0: just send info, 1: start compute, 2: abort
     // 3: report status
-    dmaInfo.status = 0;
+    dmaInfo.status = (uint32_t) 0;
     // 0: idle, 1: ready, 2: start-moving data,
     // 3: in-computing 4: moving to mem 5: DONE
 
     printDmaInfo(&dmaInfo);
-    outsb(pioAddr, (void *)&dmaInfo, sizeof(dmaInfo));
+    outsb(pioAddr, (void *)&dmaInfo, sizeof(DmaInfo));
 
-    memset(&dmaInfoRet, 0, sizeof(dmaInfo));
     insb(pioAddr, (void *)&dmaInfoRet, sizeof(DmaInfo));
     printDmaInfo(&dmaInfoRet);
 }
@@ -122,7 +125,9 @@ void testPio1()
 int main(int argc, char* argv[])
 {
     printf("Hello world! - PU\n");
-    printf("VA = %#x\n", &dmaInfo);
+    DmaInfo * p ;
+    printf("VA = %#x (pointer size=%d)\n", &dmaInfo, sizeof(DmaInfo *));
+
 
     testPio1();
 

@@ -37,6 +37,7 @@
 #include "base/trace.hh"
 #include "debug/PuEngine2.hh"
 #include "debug/PuEngine3.hh"
+#include "mem/packet.hh"
 #include "params/PuEngine3.hh"
 #include "sim/system.hh"
 
@@ -52,6 +53,8 @@ PuEngine3::PuEngine3(const Params &p) :
     _pioAddr = p.pio_addr;
     _pucore3 = p.pucore3;
 
+    reg.status = 1;
+
     DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", _devname);
 }
 
@@ -62,7 +65,21 @@ PuEngine3::read(PacketPtr pkt)
 //   _super::read(pkt);
     DPRINTF(PuEngine3, "PuEngine3: read(%#x) sz=%d requested\n",
                     pkt->getAddr(), pkt->getSize());
-    panic("Device %s.read() not imlpmented\n", name());
+    //panic("Device %s.read() not imlpmented\n", name());
+
+    pkt->makeAtomicResponse();
+
+    //assert(this->getAddrRanges().front().contains(pkt->getAddr())) ;
+
+    DPRINTF(PuEngine3, "read packet va=%#x size=%d\n",
+                pkt->getAddr(), pkt->getSize());
+    DPRINTF(PuEngine3, "CPU read request paddr=%#x\n",pkt->req->getPaddr());
+
+    std::memcpy((void *)pkt->getPtr<uint8_t>(),
+                (void *)&this->reg, pkt->getSize());
+
+    DPRINTF(PuEngine3, "Done read : status value =%#x (%#x)\n",
+                pkt->getPtr<DmaInfo>()->status, this->reg.status);
 
     return _pioLatency;
 }
@@ -75,7 +92,22 @@ PuEngine3::write(PacketPtr pkt)
     DPRINTF(PuEngine3, "PuEngine3: write(%#x) sz=%d requested\n",
                     pkt->getAddr(), pkt->getSize());
 
-    panic("Device %s. write() not imlpmented\n", name());
+    //panic("Device %s. write() not imlpmented\n", name());
+
+    //pkt->makeAtomicResponse();
+
+    //assert(this->getAddrRanges().front().contains(pkt->getAddr())) ;
+
+    DPRINTF(PuEngine3, "write packet pa=%#x size=%d\n",
+                pkt->getAddr(), pkt->getSize());
+    DPRINTF(PuEngine3, "CPU read request paddr=%#x\n",pkt->req->getPaddr());
+
+
+    std::memcpy((void *)&this->reg,
+        (void *)pkt->getPtr<uint8_t>(), pkt->getSize());
+
+    DPRINTF(PuEngine3, "Done write : status value =%#x (%#x)\n",
+            pkt->getPtr<DmaInfo>()->status, this->reg.status);
 
     return _pioLatency;
 }

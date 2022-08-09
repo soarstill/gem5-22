@@ -51,6 +51,38 @@ namespace gem5
 {
 
 /**
+   *  DmaInfo
+   *
+   *  Information for an PU+DMA operation
+   *  Play a role of the device register
+   */
+  class DmaInfo
+  {
+    public:
+      uint32_t pa;
+      uint32_t pb;
+      uint32_t pc;
+      uint32_t size;
+      uint32_t cmd;
+      // cmd = 0: just send info, 1: start compute,
+      // 2: abort  3: report status
+      uint32_t status;
+      // status 0: idle, 1: ready, 2: start-moving data,
+      // 3: in-computing 4: moving to mem 5: DONE
+
+    void print()
+    {
+        printf("-- DMA Info ---\n");
+        printf("  .pa = %#x \n", (uint32_t)pa);
+        printf("  .pb = %#x \n", (uint32_t)pb);
+        printf("  .pc = %#x \n", (uint32_t)pc);
+        printf("  .size = %d \n", size);
+        printf("  .cmd = %d \n", cmd);
+        printf("  .status = %d \n\n", status);
+    }
+  };
+
+/**
  * PuEngine3
  * This device just panics when accessed. It is supposed to warn
  * the user that the kernel they are running has unsupported
@@ -67,6 +99,10 @@ class PuEngine3 : public BasicPioDevice
     Tick _pioLatency;
     PuCore3 * _pucore3;
     AddrRangeList _ranges;
+
+  protected:
+    // device register for PuEngine3: DMA command & status
+    gem5::DmaInfo reg;
 
   public:
     using Params = PuEngine3Params;
@@ -87,6 +123,9 @@ class PuEngine3 : public BasicPioDevice
      * @return a list of non-overlapping address ranges
      */
     AddrRangeList getAddrRanges() const override;
+
+  /////////////////// END /////////////////////////////////////
+
 
 };
 
