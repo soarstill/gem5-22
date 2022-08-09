@@ -44,14 +44,14 @@ namespace gem5
 {
 
 PuEngine3::PuEngine3(const Params &p) :
-    BasicPioDevice(p, p.pio_size),
-    _devname(p.devicename),
-    _pioSize(p.pio_size),
-    _pioLatency(p.pio_latency),
-    _pioAddr(p.pio_addr),
-    _pucore3(p.pucore3)
-
+    BasicPioDevice(p, p.pio_size)
 {
+    _devname = p.devicename;
+    _pioSize = p.pio_size;
+    _pioLatency = p.pio_latency;
+    _pioAddr = p.pio_addr;
+    _pucore3 = p.pucore3;
+
     DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", _devname);
 }
 
@@ -96,5 +96,6 @@ PuEngine3::getAddrRanges() const
 
     return ranges;
 }
+
 
 } // namespace gem5

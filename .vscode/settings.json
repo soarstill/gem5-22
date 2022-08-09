@@ -14,7 +14,14 @@
         "stdexcept": "cpp",
         "regex": "cpp",
         "tuple": "cpp",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "any": "cpp",
+        "memory_resource": "cpp",
+        "fstream": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp"
     },
     "python.analysis.extraPaths": [
         "./build/X86/python"

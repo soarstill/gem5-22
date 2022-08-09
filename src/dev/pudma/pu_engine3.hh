@@ -34,10 +34,18 @@
 #ifndef __DEV_PUDMA_PUENGINE3_HH__
 #define __DEV_PUDMA_PUENGINE3_HH__
 
+// main headers
 #include "dev/io_device.hh"
-#include "dev/isa_fake.hh"
 #include "dev/pudma/pu_core3.hh"
+
+// generated headers
+#include "debug/PuEngine3.hh"
 #include "params/PuEngine3.hh"
+
+// gem5 headers
+#include "mem/packet.hh"
+#include "mem/packet_access.hh"
+#include "sim/system.hh"
 
 namespace gem5
 {
