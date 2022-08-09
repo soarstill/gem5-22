@@ -94,18 +94,21 @@ class PuEngine3 : public BasicPioDevice
 
   private:
     std::string _devname;
-    Addr _pioAddr;
-    Addr _pioSize;
-    Tick _pioLatency;
+
     PuCore3 * _pucore3;
-    AddrRangeList _ranges;
+
 
   protected:
     // device register for PuEngine3: DMA command & status
     gem5::DmaInfo reg;
 
+    uint8_t retData8;
+    uint16_t retData16;
+    uint32_t retData32;
+    uint64_t retData64;
+
   public:
-    using Params = PuEngine3Params;
+    PARAMS(PuEngine3);
 
     /**
      * Constructor for the PUDMA_PUENGINE3 Class.

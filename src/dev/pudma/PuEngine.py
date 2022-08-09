@@ -79,8 +79,19 @@ class PuEngine3(BasicPioDevice): # IsaFake instead of BasicPioDevice??
     cxx_class = 'gem5::PuEngine3'
 
     pio_addr = Param.Addr(0x300, "Pio Port start Address")
-    pio_size = Param.Addr(0x800, "Size of address range")
     pio_latency = Param.Latency('100ns', "Programmed IO latency")
 
     pucore3 = Param.PuCore3("Actual compute core")
     devicename = Param.String('PuEngine3:v1',"User defined device name")
+
+    pio_size = Param.Addr(0x800, "Size of address range")
+    ret_data8 = Param.UInt8(0xFF, "Default data to return")
+    ret_data16 = Param.UInt16(0xFFFF, "Default data to return")
+    ret_data32 = Param.UInt32(0xFFFFFFFF, "Default data to return")
+    ret_data64 = Param.UInt64(0xFFFFFFFFFFFFFFFF, "Default data to return")
+
+    ret_bad_addr = Param.Bool(False, "Return pkt status bad address on access")
+    update_data = Param.Bool(False, "Update the data returned on writes")
+    warn_access = Param.String("", "String to print when device is accessed")
+    fake_mem = Param.Bool(False,
+    "Is this device acting like a memory thus may get a cache line sized req")

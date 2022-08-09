@@ -113,11 +113,19 @@ void testPio1()
     // 0: idle, 1: ready, 2: start-moving data,
     // 3: in-computing 4: moving to mem 5: DONE
 
-    printDmaInfo(&dmaInfo);
-    outsb(pioAddr, (void *)&dmaInfo, sizeof(DmaInfo));
+    uint32_t status = 0x100;
 
-    insb(pioAddr, (void *)&dmaInfoRet, sizeof(DmaInfo));
-    printDmaInfo(&dmaInfoRet);
+    //printDmaInfo(&dmaInfo);
+    printf("Hello: status written = %d", status);
+    outsb(pioAddr, (void *)&status, sizeof(status));
+
+    // change value
+    status = 0x200;
+    printf("Hello: status changed = %d", status);
+
+    // read from gem5::PuEngine3
+    insb(pioAddr, (void *)&status, sizeof(status));
+    printf("Hello: status re-read = %d", status); // should be #0x100
 }
 
 

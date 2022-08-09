@@ -45,17 +45,137 @@ namespace gem5
 {
 
 PuEngine3::PuEngine3(const Params &p) :
-    BasicPioDevice(p, p.pio_size)
+    BasicPioDevice(p, p.ret_bad_addr ? 0 : p.pio_size)
 {
-    _devname = p.devicename;
-    _pioSize = p.pio_size;
-    _pioLatency = p.pio_latency;
-    _pioAddr = p.pio_addr;
-    _pucore3 = p.pucore3;
+    reg.status = 7;
 
-    reg.status = 1;
+    retData8 = p.ret_data8;
+    retData16 = p.ret_data16;
+    retData32 = p.ret_data32;
+    retData64 = p.ret_data64;
 
     DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", _devname);
+}
+
+Tick
+PuEngine3::read(PacketPtr pkt)
+{
+    pkt->makeAtomicResponse();
+
+    if (params().warn_access != "")
+        warn("Device %s accessed by read to address %#x size=%d\n",
+                name(), pkt->getAddr(), pkt->getSize());
+    if (params().ret_bad_addr) {
+        DPRINTF(PuEngine3, "read to bad address va=%#x size=%d\n",
+                pkt->getAddr(), pkt->getSize());
+        pkt->setBadAddress();
+    } else {
+        assert(this->getAddrRanges().front().contains(pkt->getAddr())) ;
+// assert(pkt->getAddr() >= pioAddr && pkt->getAddr() < pioAddr + pioSize);
+        DPRINTF(PuEngine3, "read  va=%#x size=%d\n",
+                pkt->getAddr(), pkt->getSize());
+        switch (pkt->getSize()) {
+          case sizeof(uint64_t):
+             pkt->setLE(retData64);
+             break;
+          case sizeof(uint32_t):
+             pkt->setLE(retData32);
+             break;
+          case sizeof(uint16_t):
+             pkt->setLE(retData16);
+             break;
+          case sizeof(uint8_t):
+             pkt->setLE(retData8);
+             break;
+          default:
+ //            if (params().fake_mem)
+                 std::memset(pkt->getPtr<uint8_t>(), 0, pkt->getSize());
+ //            else
+ //   panic("invalid access size! Device being accessed by cache?\n");
+        }
+    }
+    return pioDelay;
+}
+
+Tick
+PuEngine3::write(PacketPtr pkt)
+{
+    if (params().warn_access != "") {
+        uint64_t data;
+        switch (pkt->getSize()) {
+          case sizeof(uint64_t):
+            data = pkt->getLE<uint64_t>();
+            break;
+          case sizeof(uint32_t):
+            data = pkt->getLE<uint32_t>();
+            break;
+          case sizeof(uint16_t):
+            data = pkt->getLE<uint16_t>();
+            break;
+          case sizeof(uint8_t):
+            data = pkt->getLE<uint8_t>();
+            break;
+          default:
+            panic("invalid access size: %u\n", pkt->getSize());
+        }
+        warn("Device %s accessed by write  %#x size=%d data=%#x\n",
+                name(), pkt->getAddr(), pkt->getSize(), data);
+    }
+    if (params().ret_bad_addr) {
+        DPRINTF(PuEngine3, "write to bad address va=%#x size=%d \n",
+                pkt->getAddr(), pkt->getSize());
+        pkt->setBadAddress();
+    } else {
+        DPRINTF(PuEngine3, "write - va=%#x size=%d \n",
+                pkt->getAddr(), pkt->getSize());
+
+        if (params().update_data) {
+            switch (pkt->getSize()) {
+              case sizeof(uint64_t):
+                retData64 = pkt->getLE<uint64_t>();
+                break;
+              case sizeof(uint32_t):
+                retData32 = pkt->getLE<uint32_t>();
+                break;
+              case sizeof(uint16_t):
+                retData16 = pkt->getLE<uint16_t>();
+                break;
+              case sizeof(uint8_t):
+                retData8 = pkt->getLE<uint8_t>();
+                break;
+              default:
+                panic("invalid access size!\n");
+            }
+        }
+    }
+    return pioDelay;
+}
+
+/*
+Tick
+PuEngine3::read(PacketPtr pkt)
+{
+// TODO : implement
+//   _super::read(pkt);
+    DPRINTF(PuEngine3, "PuEngine3: read(%#x) sz=%d requested\n",
+                    pkt->getAddr(), pkt->getSize());
+    //panic("Device %s.read() not imlpmented\n", name());
+
+    pkt->makeAtomicResponse();
+
+    //assert(this->getAddrRanges().front().contains(pkt->getAddr())) ;
+
+    DPRINTF(PuEngine3, "read packet va=%#x size=%d\n",
+                pkt->getAddr(), pkt->getSize());
+    DPRINTF(PuEngine3, "CPU read request paddr=%#x\n",pkt->req->getPaddr());
+
+    std::memcpy((void *)pkt->getPtr<uint8_t>(),
+                (void *)&this->reg, pkt->getSize());
+
+    DPRINTF(PuEngine3, "Done write : value =%#x \n",
+                        *pkt->getPtr<uint8_t>());
+
+    return _pioLatency;
 }
 
 Tick
@@ -78,10 +198,10 @@ PuEngine3::read(PacketPtr pkt)
     std::memcpy((void *)pkt->getPtr<uint8_t>(),
                 (void *)&this->reg, pkt->getSize());
 
-    DPRINTF(PuEngine3, "Done read : status value =%#x (%#x)\n",
-                pkt->getPtr<DmaInfo>()->status, this->reg.status);
+    DPRINTF(PuEngine3, "Done write : value =%#x \n",
+                        *pkt->getPtr<uint8_t>());
 
-    return _pioLatency;
+    return pioDelay;
 }
 
 Tick
@@ -106,25 +226,25 @@ PuEngine3::write(PacketPtr pkt)
     std::memcpy((void *)&this->reg,
         (void *)pkt->getPtr<uint8_t>(), pkt->getSize());
 
-    DPRINTF(PuEngine3, "Done write : status value =%#x (%#x)\n",
-            pkt->getPtr<DmaInfo>()->status, this->reg.status);
+    DPRINTF(PuEngine3, "Done write : status value =%#x \n",
+                        *pkt->getPtr<uint8_t>());
 
-    return _pioLatency;
+    return pioDelay;
 }
-
+*/
 
 AddrRangeList
 PuEngine3::getAddrRanges() const
 {
     AddrRangeList ranges;
 
-    assert(_pioSize != 0);
+    assert(pioSize != 0);
 
-    uint64_t start = X86PIO_BASE_ADDR + _pioAddr;
-    ranges.push_back(RangeSize(start, _pioSize));
+    uint64_t start = X86PIO_BASE_ADDR + pioAddr;
+    ranges.push_back(RangeSize(start, pioSize));
 
     DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
-            _devname, ranges.front().to_string());
+            name(), ranges.front().to_string());
 
     return ranges;
 }
