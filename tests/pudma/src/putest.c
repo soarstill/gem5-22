@@ -26,32 +26,48 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-
+// Definitions
 #define REG32(x) (*((volatile unsigned int *)(x)))
-
 #define DMA_ADDRS   REG32(0x10000000)
 #define DMA_ADDRD   REG32(0x10000004)
 #define DMA_SIZE    REG32(0x10000008)
 #define DMA_CMD     REG32(0x1000000C)
 #define DMA_STATUS  REG32(0xC0000010)
 
-void testDma()
+// lib headers
+#include <errno.h>
+#include <stdio.h>
+#include <sys/io.h>
+
+typedef struct _DmaInfo
 {
-    DMA_CMD = 0x30;
-    unsigned int value = DMA_STATUS;
+    unsigned int src;
+    unsigned int dst;
+    unsigned int size;
+    unsigned int cmd;
+    unsigned int status;
+} DmaInfo;
+
+volatile DmaInfo dmaInfo =
+    {0x01,0x02,0x03,0x04,0x05};
+
+void testPio()
+{
+    outsb(0x03ff, (void *)&dmaInfo, sizeof(dmaInfo));
+    // VA = 0x3ff + 8000000000000000
+    insb(0x03ff, ( void *)&dmaInfo, sizeof(dmaInfo));
 }
-
-int x;
-
 
 int main(int argc, char* argv[])
 {
-
     printf("Hello world! - PU\n");
-    printf("VA = %#x\n", &x);
+    printf("VA = %#x\n", &dmaInfo);
+    dmaInfo.src = 0x03; // WRITE REQ hook the v address in PuEngine2, 0x100
 
+    testPio();
 
+    // printed 0x100 (NOT 0x03) (hooked by gem5), READ REQ hook by PuEngine2
+    printf("Hello world! - Done! Dma.src = %#x\n", dmaInfo.src);
     return 0;
 }
 
