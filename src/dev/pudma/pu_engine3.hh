@@ -50,8 +50,15 @@ namespace gem5
  */
 class PuEngine3 : public BasicPioDevice
 {
+  #define X86PIO_BASE_ADDR (0x8000000000000000)
+
   private:
     std::string devname;
+    Addr _pioAddr;
+    Addr _pioSize;
+    Tick _pioLatency;
+    PuCore3 * _pucore3;
+    AddrRangeList ranges;
 
   public:
     using Params = PuEngine3Params;
@@ -73,7 +80,6 @@ class PuEngine3 : public BasicPioDevice
      */
     AddrRangeList getAddrRanges() const override;
 
-    PuCore3 *pucore3;
 };
 
 } // namespace gem5

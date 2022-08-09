@@ -46,46 +46,53 @@ namespace gem5
 PuEngine3::PuEngine3(const Params &p) :
     BasicPioDevice(p, p.pio_size),
     devname(p.devicename),
-    pucore3(p.pucore3)
+    _pucore3(p.pucore3),
+    _pioAddr(p.pio_addr),
+    _pioSize(p.pio_size),
+    _pioLatency(p.pio_latency)
 {
     DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", devname);
-    DPRINTF(PuEngine3, "Pio Addr=%#x, Size=%#x\n",
-            p.pio_addr, p.pio_size);
+
+    assert(p.pio_size != 0);
+
+    uint64_t start = X86PIO_BASE_ADDR + p.pio_addr;
+    uint64_t end   = X86PIO_BASE_ADDR + p.pio_addr + p.pio_size - 1;
+
+    ranges.push_back(AddrRange(start, end));
+
+    DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
+            devname, ranges.front().to_string());
 }
 
 Tick
 PuEngine3::read(PacketPtr pkt)
 {
 //   _super::read(pkt);
+    DPRINTF(PuEngine3, "PuEngine3: read(%#x) requested\n",
+                    pkt->getAddr());
+    //panic("Device %s.read() not imlpmented\n", devname);
 
-    panic("Device %s.read() not imlpmented\n", devname);
+   return _pioLatency;
 }
 
 Tick
 PuEngine3::write(PacketPtr pkt)
 {
 //   _super::read(pkt);
+    DPRINTF(PuEngine3, "PuEngine3: write(%#x) requested\n",
+                    pkt->getAddr());
 
-    panic("Device %s. write() not imlpmented\n", devname);
+// panic("Device %s. write() not imlpmented\n", devname);
+
+   return _pioLatency;
 }
 
-#define PIO_BASE_ADDR 0x8000000000000000
 
 AddrRangeList
 PuEngine3::getAddrRanges() const
 {
-    assert(pioSize != 0);
-    AddrRangeList ranges;
-    DPRINTF(PuEngine3, "registering range: %#x(%#x)\n",
-            pioAddr , pioSize);
-    ranges.push_back(RangeSize(pioAddr + PIO_BASE_ADDR, pioSize));
-//    ranges.push_back(AddrRange(PIO_BASE_ADDR + pioAddr,
-//                               PIO_BASE_ADDR + pioAddr + pioSize - 1));
+    assert(_pioSize != 0);
 
-    DPRINTF(PuEngine3, "registered range(size):  %#x (%#x)\n",
-            ranges.front().start(), ranges.front().size());
-    DPRINTF(PuEngine3, "registered range:  %s\n",
-            ranges.front().to_string());
     return ranges;
 }
 } // namespace gem5
