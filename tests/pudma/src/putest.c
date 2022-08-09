@@ -51,11 +51,21 @@ typedef struct _DmaInfo
 volatile DmaInfo dmaInfo =
     {0x01,0x02,0x03,0x04,0x05};
 
+#define PIO_BASE_ADDR
+    ((unsigned long long)0x8000000000000000)
+unsigned long long pioAddr = 0x10;
+unsigned long long pioSize = 0x400;
+
 void testPio()
 {
-    outsb(0x03ff, (void *)&dmaInfo, sizeof(dmaInfo));
-    // VA = 0x3ff + 8000000000000000
-    insb(0x03ff, ( void *)&dmaInfo, sizeof(dmaInfo));
+    printf("Hello - READ PIO : %#xL, VA = %#xL",
+            pioAddr, (pioAddr + PIO_BASE_ADDR));
+
+    outsb(pioAddr, (void *)&dmaInfo, 16);
+    insb(pioAddr, ( void *)&dmaInfo, 16);
+
+    printf("Hello - WRITE PIO : %#x, VA = %#x",
+        pioAddr, (pioAddr + PIO_BASE_ADDR));
 }
 
 int main(int argc, char* argv[])

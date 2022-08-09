@@ -25,7 +25,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from m5.objects.Device import IsaFake
+from m5.objects.Device import BasicPioDevice
 from m5.params import *
 from m5.SimObject import SimObject
 
@@ -73,11 +73,14 @@ class PuCore3(SimObject):
     write_bandwidth = Param.MemoryBandwidth('100MB/s', "Bandwidth to fill "
                                             "the buffer")
 
-class PuEngine3(IsaFake): # IsaFake instead of BasicPioDevice??
+class PuEngine3(BasicPioDevice): # IsaFake instead of BasicPioDevice??
     type = 'PuEngine3'
     cxx_header = "dev/pudma/pu_engine3.hh"
     cxx_class = 'gem5::PuEngine3'
 
     pio_addr = Param.Addr(0x300, "Pio Port start Address")
-    pio_size = Param.Addr('256B',"Pio Addr Size")
+    pio_size = Param.Addr(0x800, "Size of address range")
+    pio_latency = Param.Latency('100ns', "Programmed IO latency")
+
     pucore3 = Param.PuCore3("Actual compute core")
+    devicename = Param.String('PuEngine3:v1',"User defined device name")

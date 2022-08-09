@@ -35,16 +35,20 @@
 #include <string>
 
 #include "base/trace.hh"
+#include "debug/PuEngine2.hh"
+#include "debug/PuEngine3.hh"
 #include "params/PuEngine3.hh"
 #include "sim/system.hh"
 
 namespace gem5
 {
 
-PuEngine3::PuEngine3(const Params &p)
-    : IsaFake(p), devname(p.name), pucore3(p.pucore3)
+PuEngine3::PuEngine3(const Params &p) :
+    BasicPioDevice(p, p.pio_size),
+    devname(p.devicename),
+    pucore3(p.pucore3)
 {
-    DPRINTF(PuEngine3, "Pio Device %s created\n", p.name);
+    DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", devname);
     DPRINTF(PuEngine3, "Pio Addr=%#x, Size=%#x\n",
             p.pio_addr, p.pio_size);
 }
@@ -65,5 +69,23 @@ PuEngine3::write(PacketPtr pkt)
     panic("Device %s. write() not imlpmented\n", devname);
 }
 
+#define PIO_BASE_ADDR 0x8000000000000000
 
+AddrRangeList
+PuEngine3::getAddrRanges() const
+{
+    assert(pioSize != 0);
+    AddrRangeList ranges;
+    DPRINTF(PuEngine3, "registering range: %#x(%#x)\n",
+            pioAddr , pioSize);
+    ranges.push_back(RangeSize(pioAddr + PIO_BASE_ADDR, pioSize));
+//    ranges.push_back(AddrRange(PIO_BASE_ADDR + pioAddr,
+//                               PIO_BASE_ADDR + pioAddr + pioSize - 1));
+
+    DPRINTF(PuEngine3, "registered range(size):  %#x (%#x)\n",
+            ranges.front().start(), ranges.front().size());
+    DPRINTF(PuEngine3, "registered range:  %s\n",
+            ranges.front().to_string());
+    return ranges;
+}
 } // namespace gem5

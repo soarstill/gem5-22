@@ -81,13 +81,20 @@ system.mem_ctrl.port = system.membus.mem_side_ports
 # Connect the system up to the membus
 system.system_port = system.membus.cpu_side_ports
 
+# Modified by H.S.Song 2022
+# Create the simple memory object
+system.puengine3 = PuEngine3()
+system.puengine3.pucore3 = PuCore3()
+# PuEngine3 connected to MemBus to get request packets
+system.membus.mem_side_ports = system.puengine3.pio
+
 # Create a process for a simple "Hello World" application
 process = Process()
 # Set the command
 # grab the specific path to the binary
 thispath = os.path.dirname(os.path.realpath(__file__))
 binpath = os.path.join(thispath, '../../',
-                       'tests/test-progs/hello/bin/x86/linux/hello')
+                       'tests/pudma/bin/x86/linux/putest32-static')
 # cmd is a list which begins with the executable (like argv)
 process.cmd = [binpath]
 # Set the cpu to use the process as its workload and create thread contexts

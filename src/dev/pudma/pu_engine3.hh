@@ -36,6 +36,7 @@
 
 #include "dev/io_device.hh"
 #include "dev/isa_fake.hh"
+#include "dev/pudma/pu_core3.hh"
 #include "params/PuEngine3.hh"
 
 namespace gem5
@@ -47,7 +48,7 @@ namespace gem5
  * the user that the kernel they are running has unsupported
  * options (i.e. frame buffer)
  */
-class PuEngine3 : public IsaFake
+class PuEngine3 : public BasicPioDevice
 {
   private:
     std::string devname;
@@ -64,6 +65,15 @@ class PuEngine3 : public IsaFake
 
     virtual Tick read(PacketPtr pkt);
     virtual Tick write(PacketPtr pkt);
+
+    /**
+     * Determine the address ranges that this device responds to.
+     *
+     * @return a list of non-overlapping address ranges
+     */
+    AddrRangeList getAddrRanges() const override;
+
+    PuCore3 *pucore3;
 };
 
 } // namespace gem5
