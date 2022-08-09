@@ -53,12 +53,12 @@ class PuEngine3 : public BasicPioDevice
   #define X86PIO_BASE_ADDR (0x8000000000000000)
 
   private:
-    std::string devname;
+    std::string _devname;
     Addr _pioAddr;
     Addr _pioSize;
     Tick _pioLatency;
     PuCore3 * _pucore3;
-    AddrRangeList ranges;
+    AddrRangeList _ranges;
 
   public:
     using Params = PuEngine3Params;
