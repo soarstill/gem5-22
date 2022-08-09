@@ -185,16 +185,18 @@ PuEngine2::handleRequest(PacketPtr pkt)
     }
 
     //panic_if(!(pkt->getAddrRange().isSubset(getAddrRanges().front()))),
-    panic_if(!(getAddrRanges().front().contains(pkt->getAddr())),
-            "Can't handle address range for packet %s\n", pkt->print());
+    if (!(getAddrRanges().front().contains(pkt->getAddr()))){
+    DPRINTF(PuEngine2,"Can't handle address range for packet %s\n",
+            pkt->print());
+    }
 
        // Simply forward to the memory port
     if (pkt->req->isInstFetch()) {
-        DPRINTF(PuEngine2,"Got inst request (%s) for v addr %#x (size=%d)\n", \
+        DPRINTF(PuEngine2,"Got inst request (%s) for v addr %#x (size=%d)\n",
             pkt->cmdString(), pkt->req->getVaddr(), pkt->req->getSize());
-        DPRINTF(PuEngine2,"Got inst request(%s) for p addr %#x (size=%d)\n", \
+        DPRINTF(PuEngine2,"Got inst request(%s) for p addr %#x (size=%d)\n",
             pkt->cmdString(), pkt->req->getPaddr(), pkt->req->getSize());
-        DPRINTF(PuEngine2,"Got inst Packet(%s) for addr %#x (size=%d)\n", \
+        DPRINTF(PuEngine2,"Got inst Packet(%s) for addr %#x (size=%d)\n",
             pkt->cmdString(), pkt->getAddr(), pkt->getSize());
 
 
@@ -207,9 +209,12 @@ PuEngine2::handleRequest(PacketPtr pkt)
             pkt->cmdString(), pkt->getAddr(), pkt->getSize());
     }
 
+    if (pkt->req->getVaddr() >= 0x8000000000000000 ) { // user PIO,inl()
+        DPRINTF(PuEngine2,"PIO addr VA=%#x PA=%#x SZ=%d\n", \
+        pkt->req->getVaddr(),pkt->req->getPaddr(), pkt->req->getSize());
+    }
 
-
-    if (pkt->req->getVaddr() == 0x80e42e0) {
+    if (pkt->req->getVaddr() == 0x80e3068) { // Tric - Hook
         DPRINTF(PuEngine2,"TRAP get IO addr VA=%#x PA=%#x--Not Imple.\n", \
             pkt->req->getVaddr(),pkt->req->getPaddr());
         if (pkt->hasData()) {
@@ -224,8 +229,6 @@ PuEngine2::handleRequest(PacketPtr pkt)
             pkt->setData((uint8_t *)&di);
             DPRINTF(PuEngine2, "DmaInfo.src = %#x, corrupted by PuEngine\n", \
                  *dp);
-
-//            pkt->writeData((uint8_t *)&di);
         }
     }
 
