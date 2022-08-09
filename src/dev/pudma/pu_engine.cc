@@ -99,7 +99,7 @@ PuEngine::processEvent()
     DPRINTF(PUDMA,"PuEngine: Processing the event! %d left\n",
                           timesLeft);
     if (--timesLeft <= 0) {
-        "Done %d firing! \n", timesLeft);
+        DPRINTF(PUDMA,"Done %d firing! \n", timesLeft);
         pucore->compute("SONG ");
     } else {
         schedule(event, curTick() + latency);

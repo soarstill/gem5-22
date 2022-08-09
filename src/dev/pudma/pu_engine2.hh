@@ -29,6 +29,7 @@
 #ifndef __PUDMA_PUENGINE2_HH__
 #define __PUDMA_PUENGINE2_HH__
 
+#include "dev/pudma/pu_core.hh"
 #include "mem/port.hh"
 #include "params/PuEngine2.hh"
 #include "sim/sim_object.hh"

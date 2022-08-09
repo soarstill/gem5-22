@@ -14,7 +14,7 @@ BIN2 = ../
 all: $(TARGET32) $(TARGET64) $(TARGET64D)
 
 $(TARGET64): $(SRCS) dockcross-x64
-	./dockcross-x64 bash -c '$$CC $(SRCS) -o $@ -static'
+	./dockcross-x64 bash -c '$$CC $(SRCS) -o $@ -static -O2'
 	cp $@ $(BIN); mv $@ $(BIN2)
 
 $(TARGET64D): $(SRCS) dockcross-x64
@@ -23,7 +23,7 @@ $(TARGET64D): $(SRCS) dockcross-x64
 
 
 $(TARGET32): $(SRCS) dockcross-x86
-	./dockcross-x86 bash -c '$$CC $(SRCS) -o $@ -static'
+	./dockcross-x86 bash -c '$$CC $(SRCS) -o $@ -static -O2'
 	cp $@ $(BIN)
 
 dockcross-x64:
