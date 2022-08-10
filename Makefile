@@ -62,7 +62,7 @@ $(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
 pumem3: $(PUTEST_X86)
 	./build/X86/gem5.opt \
 	   	--outdir=$(M5OUT_PUTEST)/pumem3 \
-		--debug-flags=PuEngine2,PuEngine3,MemCtrl \
+		--debug-flags=PuEngine2,PuEngine3 \
 		configs/pudma/pumem3.py
 	@echo "See $(M5OUT_PUTEST)/pumem3 directory\n\n"
 

@@ -41,6 +41,8 @@
 #include <sys/io.h>
 
 typedef unsigned int uint32_t;
+#define X86PIO_BASE_ADDR (0x8000000000000000)
+#define SRC_REG REG32(X86PIO_BASE_ADDR+0x300)
 
 typedef struct _DmaInfo
 {
@@ -96,7 +98,8 @@ int isEqual(DmaInfo *da, DmaInfo * db)
 }
 
 
-void testPio1()
+// PIO 포트 테스트 : 성공, pio 주소 + X86 PIO BASE 로 gem5에 전달됨
+void test1()
 {
     memset(&dmaInfo, 0, sizeof(dmaInfo));
     memset(&dmaInfoRet, 0, sizeof(dmaInfoRet));
@@ -116,18 +119,23 @@ void testPio1()
     uint32_t status = 0x100;
 
     //printDmaInfo(&dmaInfo);
-    printf("Hello: status written = %d", status);
+    printf("Hello: status written = %d\n", status);
     outsb(pioAddr, (void *)&status, sizeof(status));
 
     // change value
     status = 0x200;
-    printf("Hello: status changed = %d", status);
+    printf("Hello: status changed = %d\n", status);
 
     // read from gem5::PuEngine3
     insb(pioAddr, (void *)&status, sizeof(status));
-    printf("Hello: status re-read = %d", status); // should be #0x100
+    printf("Hello: status re-read = %d\n", status); // should be #0x100
 }
 
+// 직접 주소 접근 테스트 : 실패 (page fault)
+void test2()
+{
+    SRC_REG = 0x500;
+}
 
 
 int main(int argc, char* argv[])
@@ -137,7 +145,8 @@ int main(int argc, char* argv[])
     printf("VA = %#x (pointer size=%d)\n", &dmaInfo, sizeof(DmaInfo *));
 
 
-    testPio1();
+    //testPio1();
+    test1();
 
     // printed 0x100 (NOT 0x03) (hooked by gem5), READ REQ hook by PuEngine2
     printf("Hello world! - PU Done!\n\n");

@@ -45,9 +45,12 @@ namespace gem5
 {
 
 PuEngine3::PuEngine3(const Params &p) :
-    BasicPioDevice(p, p.ret_bad_addr ? 0 : p.pio_size)
+    BasicPioDevice(p, p.pio_size)
 {
-    reg.status = 7;
+    pioMem = new uint8_t[p.pio_size]();
+    if (pioMem == nullptr) {
+      panic("Cannot allocate pio Memory of PuCore3");
+    }
 
     retData8 = p.ret_data8;
     retData16 = p.ret_data16;
@@ -240,8 +243,8 @@ PuEngine3::getAddrRanges() const
 
     assert(pioSize != 0);
 
-    uint64_t start = X86PIO_BASE_ADDR + pioAddr;
-    ranges.push_back(RangeSize(start, pioSize));
+    uint64_t start = X86PIO_BASE_ADDR + params().pio_addr;
+    ranges.push_back(RangeSize(start, params().pio_addr));
 
     DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
             name(), ranges.front().to_string());

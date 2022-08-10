@@ -107,6 +107,8 @@ class PuEngine3 : public BasicPioDevice
     uint32_t retData32;
     uint64_t retData64;
 
+    uint8_t * pioMem; // PIO Register Memory Area
+
   public:
     PARAMS(PuEngine3);
 
