@@ -49,6 +49,7 @@
 
 namespace gem5
 {
+  #define X86PIO_BASE_ADDR (0x8000000000000000)
 
 /**
    *  DmaInfo
@@ -90,13 +91,10 @@ namespace gem5
  */
 class PuEngine3 : public BasicPioDevice
 {
-  #define X86PIO_BASE_ADDR (0x8000000000000000)
 
   private:
     std::string _devname;
-
     PuCore3 * _pucore3;
-
 
   protected:
     // device register for PuEngine3: DMA command & status
@@ -107,7 +105,7 @@ class PuEngine3 : public BasicPioDevice
     uint32_t retData32;
     uint64_t retData64;
 
-    uint8_t * pioMem; // PIO Register Memory Area
+    uint8_t * regMemory; // PIO Register Memory Area
 
   public:
     PARAMS(PuEngine3);

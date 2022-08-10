@@ -41,6 +41,8 @@
 #include <sys/io.h>
 
 typedef unsigned int uint32_t;
+typedef unsigned char uint8_t;
+
 #define X86PIO_BASE_ADDR (0x8000000000000000)
 #define SRC_REG REG32(X86PIO_BASE_ADDR+0x300)
 
@@ -98,6 +100,36 @@ int isEqual(DmaInfo *da, DmaInfo * db)
 }
 
 
+int testWRint(unsigned short pio, unsigned int wvalue)
+{
+
+    outl(wvalue, pio);
+    printf("Hello: testWRint written = %#x\n", wvalue);
+
+    // read from gem5::PuEngine3
+    unsigned int retval = inl(pio);
+    printf("Hello: testWRint read = %#x %s\n",
+        retval, retval==wvalue ? "SUCCESS" : "FAIL"); // should be the same
+
+    return retval;
+}
+
+
+int testWRbyte(unsigned short pio, unsigned char wvalue)
+{
+
+    outb(wvalue, pio);
+    printf("Hello: testWRbyte written = %#x\n", wvalue);
+
+    // read from gem5::PuEngine3
+    unsigned char retval = inb(pio);
+    printf("Hello: testWRbyte read = %#x %s\n",
+        retval, retval==wvalue ? "SUCCESS" : "FAIL"); // should be the same
+
+    return retval;
+}
+
+
 // PIO 포트 테스트 : 성공, pio 주소 + X86 PIO BASE 로 gem5에 전달됨
 void test1()
 {
@@ -131,25 +163,173 @@ void test1()
     printf("Hello: status re-read = %d\n", status); // should be #0x100
 }
 
+
 // 직접 주소 접근 테스트 : 실패 (page fault)
 void test2()
 {
     SRC_REG = 0x500;
 }
+// inl(), outl() 테스트 : 4바이트 - Success
+void test3()
+{
+    int status = 0x100;
+    int retval = 0x000;
 
+    outl(status, pioAddr);
+    printf("Hello: status written = %#x\n", status);// 0x100
+                                                   //
+    // read from gem5::PuEngine3
+    retval = inl(pioAddr);
+     printf("Hello: status re-read = %#x %s\n",
+        retval, retval==status ? "SUCCESS" : "FAIL"); // should be staus
+}
+
+// insb(), outsb() - FAIL
+void test4()
+{
+    int status = 0x300;
+    int retval = 0x600;
+
+    outsb(pioAddr, &status, sizeof(status));
+    printf("Hello: status written = %#x\n", status);// 0x300
+                                                   //
+    // read from gem5::PuEngine3
+    insb(pioAddr, &retval, sizeof(retval));
+    printf("Hello: status re-read = %#x %s\n",
+        retval, retval==status ? "SUCCESS" : "FAIL"); // should be staus
+}
+
+
+// insb(), outsb() - FAIL
+void test5()
+{
+    char bstatus[8] = {'S', 'O', 'N', 'G', '!', '!', '!', '\0'};
+    char bretval[8] =  {'N', 'E', 'V', 'E', 'R', '!', '!','\0'};
+
+    outsb(pioAddr, bstatus, sizeof(bstatus));
+    printf("Hello: status written = %s\n", bstatus);
+
+    // read from gem5::PuEngine3
+    insb(pioAddr, bretval, sizeof(bretval));
+    printf("Hello: status re-read = '%s' ", bretval);
+    printf("( %s )\n", !strcmp(&bstatus[0], &bretval[0]) ? "SUCCESS" : "FAIL");
+    }
+
+// inb(), outb() - Fail
+void test6()
+{
+    char bstatus[8] = {'S', 'O', 'N', 'G', '!', '!', '!', '\0'};
+    char bretval[8] =  {'N', 'E', 'V', 'E', 'R', '!', '!','\0'};
+
+    for (int i = 0; i < sizeof(bstatus); i++ ) {
+        outb(bstatus[i], pioAddr);
+    }
+    printf("Hello: status written = %s\n", bstatus);
+
+    // read from gem5::PuEngine3
+    for (int i = 0; i < sizeof(bstatus); i++ ) {
+        bstatus[i] = inb(pioAddr);
+    }
+    printf("Hello: status re-read = '%s' ", bretval);
+    printf("( %s )\n", !strcmp(&bstatus[0], &bretval[0]) ? "SUCCESS" : "FAIL");
+    // should be staus
+}
+
+// inb, outb 성공
+void test7()
+{
+  char status = 0x10;
+  char retval = 0x20;
+
+    outb(status, pioAddr);
+    printf("Hello: status written = %#x\n", status);// 0x100
+                                                   //
+    // read from gem5::PuEngine3
+    retval = inb(pioAddr);
+    printf("Hello: status re-read = %#x %s\n",
+        retval, retval==status ? "SUCCESS" : "FAIL"); // should be staus
+}
+
+// inb(), outb() buffer
+void test8()
+{
+    int bstatus[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x00};
+    int bretval[8] = {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x00};;
+    //char bstatus[8] = {'S', 'O', 'N', 'G', '!', '!', '!', '\0'};
+    //char bretval[8] =  {'N', 'E', 'V', 'E', 'R', '!', '!','\0'};
+
+    for (int i = 0; i < 8; i++ ) {
+        outl(bstatus[i], pioAddr+i*sizeof(int));
+    }
+    printf("Hello: status written = %s\n", bstatus);
+
+    // read from gem5::PuEngine3
+    for (int i = 0; i < 8; i++ ) {
+        bstatus[i] = inl(pioAddr+i*sizeof(int));
+    }
+    printf("Hello: status re-read = '%#x' ", bretval[0]);
+    printf("( %s )\n", ((bstatus[0] == bretval[0]) ? "SUCCESS" : "FAIL"));
+    // should be staus
+}
+
+// inl(), outl() 테스트 : 4바이트 - Success
+void test9()
+{
+    int bstatus[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+    int bretval[8] = {0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18};;
+
+   unsigned short addr = 0x304;
+   int i = 7;
+   //for (int i = 0; i < 8; i++) {
+        outl(bstatus[i], pioAddr);
+        printf("Hello: status written = %#x\n", bstatus[i]);// 0x100
+                            //
+        // read from gem5::PuEngine3
+        addr = addr + (i * sizeof(int));
+        bretval[i] = inl(addr);
+        printf("Hello: status re-read = %#x %s\n",
+            bretval[i], bretval[i]==bstatus[i] ? "SUCCESS" : "FAIL");
+
+   //}
+}
+
+
+void test10() // success
+{
+    int value = 0x7;
+    int ret = 0x0;
+    unsigned short pio = 0x400;
+
+    ret = testWRint(pio, value);
+
+    ret = testWRint(pio + 0x10, value+0x10);
+}
+
+void test11() // success
+{
+    int value = 0x9;
+    int ret = 0x0;
+    unsigned short pio = 0x350;
+
+    ret = testWRbyte(pio, value);
+
+    ret = testWRbyte(pio + 0x100, value+0x100);
+}
 
 int main(int argc, char* argv[])
 {
     printf("Hello world! - PU\n");
     DmaInfo * p ;
-    printf("VA = %#x (pointer size=%d)\n", &dmaInfo, sizeof(DmaInfo *));
 
+    // test3(); // SUCCESS - inl, outl
+    //test4(); // FAIL - insb, outsb
+    // test5(); // FAIL - insb, outsb
+    // test6(); for loop
+     // test9(); // inb, outb
+    test11();
 
-    //testPio1();
-    test1();
-
-    // printed 0x100 (NOT 0x03) (hooked by gem5), READ REQ hook by PuEngine2
     printf("Hello world! - PU Done!\n\n");
+
     return 0;
 }
 

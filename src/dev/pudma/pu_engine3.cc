@@ -47,8 +47,10 @@ namespace gem5
 PuEngine3::PuEngine3(const Params &p) :
     BasicPioDevice(p, p.pio_size)
 {
-    pioMem = new uint8_t[p.pio_size]();
-    if (pioMem == nullptr) {
+    regMemory = new uint8_t[p.pio_size]();
+    if (regMemory != nullptr) {
+      memset(regMemory, 0, p.pio_size);
+    } else {
       panic("Cannot allocate pio Memory of PuCore3");
     }
 
@@ -60,6 +62,114 @@ PuEngine3::PuEngine3(const Params &p) :
     DPRINTF(PuEngine3, "Device PuEngine3 %s created\n", _devname);
 }
 
+
+AddrRangeList
+PuEngine3::getAddrRanges() const
+{
+    AddrRangeList ranges;
+
+    assert(pioSize != 0);
+
+    uint64_t start = X86PIO_BASE_ADDR + params().pio_addr;
+    ranges.push_back(RangeSize(start, params().pio_addr));
+
+    DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
+            name(), ranges.front().to_string());
+
+    return ranges;
+}
+
+Tick
+PuEngine3::read(PacketPtr pkt)
+{
+    pkt->makeAtomicResponse();
+
+    int offset = pkt->getAddr() - this->getAddrRanges().front().start();
+    int size = pkt->getSize();
+
+    // uint32_t data = pkt->getLE<uint32_t>();
+    DPRINTF(PuEngine3, "PuEngine3: PKT read op  pa=%#x size=%d, data = %#x\n",
+           pkt->getAddr(), pkt->getSize(), pkt->getLE<uint32_t>());
+   DPRINTF(PuEngine3, "PuEngine3: REQ read  pa = %#x size=%d\n",
+           pkt->req->getPaddr(), pkt->req->getSize());
+
+    if (params().warn_access != "") {
+        warn("Device %s accessed by read to address %#x size=%d\n",
+                name(), pkt->getAddr(), pkt->getSize());
+    }
+
+    if (params().ret_bad_addr) {
+        DPRINTF(PuEngine3, "read to bad address pa=%#x size=%d\n",
+                pkt->getAddr(), pkt->getSize());
+        pkt->setBadAddress();
+    } else {
+        assert(this->getAddrRanges().front().contains(pkt->getAddr())) ;
+
+        // in case of out of range
+        if (offset + size > params().pio_size) {
+          size -= (offset + size - params().pio_size);
+        }
+
+        DPRINTF(PuEngine3, "PuEngine3: DONE read pa=%#x size=%d, data = %#x\n",
+            pkt->getAddr(), size, pkt->getLE<uint32_t>());
+
+        std::memcpy(pkt->getPtr<uint8_t>(), &regMemory[offset], size);
+
+        DPRINTF(PuEngine3, "PuEngine3: DONE read pa=%#x size=%d, data = %#x\n",
+            pkt->getAddr(), size, pkt->getLE<uint32_t>());
+    }
+
+    return pioDelay;
+}
+
+Tick
+PuEngine3::write(PacketPtr pkt)
+{
+    int offset = pkt->getAddr() - this->getAddrRanges().front().start();
+    int size = pkt->getSize();
+
+    //uint32_t data = pkt->getLE<uint32_t>();
+    DPRINTF(PuEngine3, "PuEngine3: PKT write op pa=%#x size=%d, data = %#x\n",
+            pkt->getAddr(), pkt->getSize(), pkt->getLE<uint32_t>());
+    DPRINTF(PuEngine3, "PuEngine3: REQ write   pa = %#x size=%d\n",
+           pkt->req->getPaddr(), pkt->req->getSize());
+
+    if (params().warn_access != "") {
+        uint64_t data;
+        data = pkt->getLE<uint8_t>();
+        warn("Device %s accessed by write  %#x size=%d data=%#x\n",
+                name(), pkt->getAddr(), pkt->getSize(), data);
+    }
+
+    if (params().ret_bad_addr) {
+        DPRINTF(PuEngine3, "write to bad address pa=%#x size=%d \n",
+                pkt->getAddr(), pkt->getSize());
+        pkt->setBadAddress();
+    } else { // NORMAL
+
+      assert(this->getAddrRanges().front().contains(pkt->getAddr())) ;
+
+      if (offset + size > params().pio_size) { // OB -> reduce size
+          size -= (offset + size - params().pio_size);
+        }
+        //pkt->setSize(size);
+
+        assert(pkt->getSize() > 0 && pkt->getSize() <= params().pio_size);
+
+        DPRINTF(PuEngine3, "write - pa=%#x size=%d \n", pkt->getAddr(),
+                                                        pkt->getSize());
+
+        std::memcpy(&regMemory[offset], pkt->getPtr<uint8_t>(), size);
+
+        DPRINTF(PuEngine3, "PuEngine3: DONE write pa=%#x size=%d,data = %#x\n",
+            pkt->getAddr(), size, pkt->getLE<uint32_t>());
+    }
+
+    return pioDelay;
+}
+
+
+/***  VERSION 2
 Tick
 PuEngine3::read(PacketPtr pkt)
 {
@@ -153,8 +263,9 @@ PuEngine3::write(PacketPtr pkt)
     }
     return pioDelay;
 }
+*/
 
-/*
+/*** VERSION 1
 Tick
 PuEngine3::read(PacketPtr pkt)
 {
@@ -235,22 +346,5 @@ PuEngine3::write(PacketPtr pkt)
     return pioDelay;
 }
 */
-
-AddrRangeList
-PuEngine3::getAddrRanges() const
-{
-    AddrRangeList ranges;
-
-    assert(pioSize != 0);
-
-    uint64_t start = X86PIO_BASE_ADDR + params().pio_addr;
-    ranges.push_back(RangeSize(start, params().pio_addr));
-
-    DPRINTF(PuEngine3, "Device %s range registered:  %s\n",
-            name(), ranges.front().to_string());
-
-    return ranges;
-}
-
 
 } // namespace gem5
