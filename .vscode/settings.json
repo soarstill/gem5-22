@@ -77,7 +77,8 @@
         "cfenv": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "errno.h": "c"
     },
     "python.analysis.extraPaths": [
         "./build/X86/python"

@@ -25,7 +25,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-from m5.objects.Device import BasicPioDevice
+from m5.objects.Device import BasicPioDevice, DmaDevice
 from m5.params import *
 from m5.SimObject import SimObject
 
@@ -95,3 +95,33 @@ class PuEngine3(BasicPioDevice): # IsaFake instead of BasicPioDevice??
     warn_access = Param.String("", "String to print when device is accessed")
     fake_mem = Param.Bool(False,
     "Is this device acting like a memory thus may get a cache line sized req")
+
+class PuCore4(SimObject):
+    type = 'PuCore4'
+    cxx_header = "dev/pudma/pu_core4.hh"
+    cxx_class = 'gem5::PuCore4'
+
+    buffer_size = Param.MemorySize('100B',
+                                   "Size of buffer to fill with message")
+    write_bandwidth = Param.MemoryBandwidth('100MB/s', "Bandwidth to fill "
+                                            "the buffer")
+    buffer_size_a = Param.MemorySize('1kB',"Size of A buffer")
+    buffer_size_b = Param.MemorySize('1kB',"Size of B buffer")
+    buffer_size_c = Param.MemorySize('1kB',"Size of C buffer")
+    opcode = Param.String("add","PU OP + matrix Addition")
+
+    core_latency = Param.Latency('100ns', "PuCore initial latency")
+
+class PuEngine4(DmaDevice):
+    type = 'PuEngine4'
+    cxx_header = "dev/pudma/pu_engine4.hh"
+    cxx_class = 'gem5::PuEngine4'
+
+    pio_addr = Param.Addr(0x300, "Pio Port start Address")
+    pio_size = Param.Addr('0x800', "Size of address range")
+    pio_latency = Param.Latency('100ns', "Programmed IO latency")
+    ret_bad_addr = Param.Bool(False, "Return pkt status bad address on access")
+    warn_access = Param.String("","String to print when device is accessed")
+
+    pucore4 = Param.PuCore4("Actual compute core")
+    devicename = Param.String('PuEngine4:v1',"User defined device name")

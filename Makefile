@@ -59,6 +59,13 @@ M5OUT_PUTEST = ./m5out/pudma
 $(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
 	cd $(PUTEST_SRC); make -f Makefile.x86
 
+pumem4: $(PUTEST_X86)
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem4 \
+		--debug-flags=PuEngine4 \
+		configs/pudma/pumem4.py
+	@echo "See $(M5OUT_PUTEST)/pumem4 directory\n\n"
+
 pumem3: $(PUTEST_X86)
 	./build/X86/gem5.opt \
 	   	--outdir=$(M5OUT_PUTEST)/pumem3 \

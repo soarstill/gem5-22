@@ -28,15 +28,20 @@
 Import('*')
 
 SimObject('PuEngine.py', sim_objects=
-    ['PuCore', 'PuCore3', 'PuEngine', 'PuEngine2', 'PuEngine3'])
+    ['PuCore', 'PuCore3', 'PuEngine', 'PuEngine2', 'PuEngine3',
+    'PuCore4','PuEngine4'])
 
 Source('pu_engine.cc')
 Source('pu_core.cc')
 Source('pu_engine2.cc')
 Source('pu_engine3.cc')
 Source('pu_core3.cc')
+Source('pu_engine4.cc')
+Source('pu_core4.cc')
 
 DebugFlag('PUDMA', "For PUDMA debug flag")
 DebugFlag('PuEngine2', "For PuEngine2 debug flag")
 DebugFlag('PuEngine3', "For PuEngine3 debug flag")
+DebugFlag('PuEngine4', "For PuEngine4 debug flag")
+
 
