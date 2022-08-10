@@ -204,7 +204,7 @@ uint32_t readPuStatus()
     return  status;
 }
 
-int32_t writePuStatus(uint32_t status)
+uint32_t writePuStatus(uint32_t status)
 {
     const unsigned short validAddr = pioAddr;
     const unsigned short statusAddr = pioAddr + 1 * sizeof(uint32_t);
@@ -214,6 +214,7 @@ int32_t writePuStatus(uint32_t status)
     return  retStatus;
 }
 
+// Unit tests
 int testWRint(unsigned short pio, unsigned int wvalue)
 {
 
