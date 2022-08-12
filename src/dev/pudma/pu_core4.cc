@@ -45,15 +45,15 @@ PuCore4::PuCore4(const PuCore4Params &p) :
     bufferSizeC(p.buffer_size_c)
 {
     buffer = new char[bufferSize]();
-    bufferA = new char[bufferSizeA]();
-    bufferB = new char[bufferSizeB]();
-    bufferC = new char[bufferSizeC]();
+    bufferA = new uint8_t[bufferSizeA]();
+    bufferB = new uint8_t[bufferSizeB]();
+    bufferC = new uint8_t[bufferSizeC]();
 
     panic_if((!buffer || !bufferA || !bufferC),
         "Could not allocate one of the buffers");
 
     DPRINTF(PuEngine4, "Created a PuCore4 object with buffer of %d\n",
-            bufferSize);
+                        bufferSize);
 }
 
 PuCore4::~PuCore4()
@@ -69,11 +69,11 @@ PuCore4::startup()
 }
 
 void
-PuCore4::compute(PuCmd puCmd, std::string from)
+PuCore4::compute(PuCmd puCmd, PuEngine4 * pue4)
 {
     DPRINTF(PuEngine4, "PuCore4: Start compute : cmd = %#x\n", puCmd.cmd);
 
-    message = "Computing " + from + "!!";
+    message = "Request Compute from" + pue4->name() +  "!!";
 
     // Kick off the the first buffer fill. If it can't fill the whole buffer
     // because of a limited bandwidth, then this function will schedule another
@@ -81,10 +81,37 @@ PuCore4::compute(PuCmd puCmd, std::string from)
     fillBuffer();
 }
 
-void PuCore4::sayHello(std::string from)
+void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
 {
-    std::string message = "Hello from " + from + "!! ";
+    std::string message = "Hello " + mesg + "from" + pue4->name() + "!! ";
     DPRINTF(PuEngine4, "PuCore4: %s\n", message);
+
+    // Prepare DMA dummy request test
+    // X Addr addr = Addr('2GiB'); // DRAM 2's start address (2G+256MB)
+    Addr addr = 0x800000000; // DRAM 2's start address (2G+256MB)
+    int size = 1024;
+    bufferA[0] = 0x12;
+    bufferB[0] = 0x34;
+
+    auto event =  new EventFunctionWrapper(
+            [this, pue4]{ OnComplete(pue4); }, "DMA Complete event");
+
+
+    DPRINTF(PuEngine4, "PuCore4::Start DMA... at %d \n", curTick());
+
+    pue4->dmaWrite(addr, size, event, (uint8_t *)&bufferA[0]);
+    pue4->dmaRead(addr, size, event, (uint8_t *)&bufferB[0]);
+
+}
+
+void
+PuCore4::OnComplete(PuEngine4 * pue4)
+{
+
+    DPRINTF(PuEngine4,
+    "PuCore4::Complete Callback DMA  %s for %s A(%d) B(%d) !! at  %d\n",
+            bufferA[0]==bufferB[0] ? "SUCCESS" : "FAIL",pue4->name(),
+            bufferA[0], bufferB[0], curTick());
 }
 
 void

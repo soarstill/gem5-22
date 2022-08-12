@@ -48,11 +48,12 @@ namespace gem5
 
 PuEngine4::PuEngine4(const Params &p) :
     DmaDevice(p),
-    m_pucore4(p.pucore4),
     m_pioSize(p.pio_size),
     m_pioAddr(p.pio_addr),
     m_pioDelay(p.pio_latency),
-    m_devicename(p.devicename)
+    m_devicename(p.devicename),
+    m_pucore4(p.pucore4),
+    m_range(p.range)
 {
     m_regMemory = new uint8_t[p.pio_size]();
     if (m_regMemory == nullptr) {
@@ -60,9 +61,19 @@ PuEngine4::PuEngine4(const Params &p) :
     }
     memset(m_regMemory, 0, p.pio_size);
 
-    if (m_pucore4) m_pucore4->sayHello(m_devicename);
+    if (!m_pucore4) {
+      panic("No pucore4 object is created. - see pumem4.py");
+    }
+    /*
+    SimObject * so = SimObject::find("PuEngine4");
+    if (!so) {
+      DPRINTF(PuEngine4, "Object name of 'PuEngine4' is %s\n",
+        so->name());
+    }
+    */
 
-    DPRINTF(PuEngine4, "Device PuEngine4 %s created\n", m_devicename);
+    DPRINTF(PuEngine4, "Starts of Ranges of PuEngine4 is %s\n",
+        m_range.to_string());
 }
 
 
@@ -185,7 +196,7 @@ bool PuEngine4::hookPuCmd()
                               puCmdClone.status);
 
     if (puCmdClone.cmd != 0) { // Hook!! TODO: call with the puClone
-      m_pucore4->sayHello("Hello PuCore4, from gem5 PuEngine4 !!!");
+      m_pucore4->sayHello("Hello PuCore4", this);
       //m_pucore4->compute(puCmdClone, "PuEngine4");
 
       return true;

@@ -123,6 +123,9 @@ int main(int argc, char* argv[])
 
     printf("Hello world! - PU Done!\n\n");
 
+    //sleep(5); // gem5 ㄴdoesn't support
+    printf("Hello world! - After sleep() - terminated. !\n\n");
+
     return 0;
 }
 

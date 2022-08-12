@@ -84,6 +84,7 @@ namespace gem5
  */
 class PuEngine4 : public DmaDevice
 {
+  PARAMS(PuEngine4)
 
   private:
     /** PuEngin's computing core */
@@ -107,8 +108,9 @@ class PuEngine4 : public DmaDevice
 
     bool hookPuCmd();
 
+    AddrRange m_range;
+
   public:
-    PARAMS(PuEngine4);
 
     /**
      * Constructor for the PUDMA_PUENGINE4 Class.

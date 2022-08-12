@@ -117,11 +117,13 @@ class PuEngine4(DmaDevice):
     cxx_header = "dev/pudma/pu_engine4.hh"
     cxx_class = 'gem5::PuEngine4'
 
-    pio_addr = Param.Addr(0x300, "Pio Port start Address")
+    pio_addr = Param.Addr('0x300', "Pio Port start Address")
     pio_size = Param.Addr('0x800', "Size of address range")
     pio_latency = Param.Latency('100ns', "Programmed IO latency")
     ret_bad_addr = Param.Bool(False, "Return pkt status bad address on access")
     warn_access = Param.String("","String to print when device is accessed")
 
+    x86_pio_base =  Param.Addr('0x8000000000000000',"X86 PIO base Address")
     pucore4 = Param.PuCore4("Actual compute core")
     devicename = Param.String('PuEngine4:v1',"User defined device name")
+    range = Param.AddrRange("Pio Address AddrRange")

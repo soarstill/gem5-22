@@ -45,9 +45,12 @@ namespace gem5
 {
 
 struct PuCmd;
+class PuEngine4;
 
 class PuCore4 : public SimObject
 {
+  PARAMS(PuCore4)
+
   private:
     /**
      * Fill the buffer with the next chunk of data
@@ -78,15 +81,16 @@ class PuCore4 : public SimObject
     /// The amount of the buffer we've used so far.
     int bufferUsed;
 
-    char *bufferA;
-    char *bufferB;
-    char *bufferC;
+    uint8_t *bufferA;
+    uint8_t *bufferB;
+    uint8_t *bufferC;
 
     int bufferSizeA;
     int bufferSizeB;
     int bufferSizeC;
 
   public:
+
    PuCore4(const PuCore4Params &p);
     ~PuCore4();
 
@@ -96,11 +100,14 @@ class PuCore4 : public SimObject
      *
      * @param name the name of the object we are saying goodbye to.
      */
-    void compute(PuCmd cmd, std::string from);
+    void compute(PuCmd cmd, PuEngine4 * pue4);
 
-    void sayHello(std::string from);
+    void sayHello(std::string mesg, PuEngine4 * pue4);
 
     void startup() override;
+
+  protected:
+    void OnComplete(PuEngine4 * pue4);
 };
 
 } // namespace gem5
