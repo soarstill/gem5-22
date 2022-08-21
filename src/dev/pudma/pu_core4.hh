@@ -27,7 +27,7 @@ class PuCore4 : public SimObject
     /**
      * Fill the buffer with the next chunk of data
      */
-    void processEvent();
+    void processEvent() {};
 
     /// An event that wraps the above function
     EventFunctionWrapper event;
@@ -61,6 +61,13 @@ class PuCore4 : public SimObject
     int bufferSizeB;
     int bufferSizeC;
 
+    Tick coreLatency;
+    std::string opcode ;
+
+    Addr m_dram2_base;  // start address of DRAM2
+    Addr m_rom1_base;   // start address of Data A
+    Addr m_rom2_base ;  // start address of Data B
+
   public:
 
    PuCore4(const PuCore4Params &p);
@@ -80,6 +87,13 @@ class PuCore4 : public SimObject
 
   protected:
     void OnComplete(PuEngine4 * pue4);
+
+private:
+
+    // functions for Matrix add operation
+    void startAdd(PuCmd *cmd, PuEngine4 *pue4); // init
+    void processAdd(PuCmd *cmd, PuEngine4 *pue4); // Callback
+    Tick doAdd(PuCmd *cmd); // calulate C = A + B
 };
 
 } // namespace gem5

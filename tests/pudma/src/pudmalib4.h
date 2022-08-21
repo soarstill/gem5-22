@@ -116,6 +116,13 @@ enum PU_STATUS_TYPE
     STS_LIMIT
 };
 
+enum PU_OP_TYPE
+{
+    OP_INVALID = 0,    // Not a state
+    OP_ADD,             // add operation
+    OP_LIMIT
+};
+
 // User Level ONLY - IF gem5 Level, comment out USER_LEVEL headers
 
 #ifdef USER_LEVEL

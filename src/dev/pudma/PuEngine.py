@@ -105,7 +105,7 @@ class PuCore4(SimObject):
     buffer_size_c = Param.MemorySize('1MiB',"Size of C buffer")
     opcode = Param.String("add","PU OP + matrix Addition")
     core_latency = Param.Latency('100ns', "PuCore initial latency")
-
+    fu_add_latency =  Param.Latency('10ns', "FU: Unit add latency")
     dram2_base = Param.Addr("DRAM2 base address")
 
     rom1 = Param.SimpleMemory("Data A memory (RO)")
@@ -137,5 +137,7 @@ class PuEngine4(DmaDevice):
     pucore4 = Param.PuCore4("Actual compute core")
     devicename = Param.String('PuEngine4:v1',"User defined device name")
     range = Param.AddrRange("Pio Address AddrRange")
+
+
 
 

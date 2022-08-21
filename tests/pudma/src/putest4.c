@@ -80,6 +80,88 @@ int testWritePuCmd(PuCmd cmd)
         return 0;
     }
 }
+#define ROWS 100
+#define COLS 100
+
+double A[ROWS][COLS];
+double B[ROWS][COLS];
+double C[ROWS][COLS];
+
+//#define ROM1_BASE (0xfff0000000)
+//#define ROM2_BASE (0xfff8000000)
+//#define DRAM2_BASE (0x800000000)
+
+int initMatrixA()
+{
+    int count = 0;
+
+    for (int i = 0; i < ROWS; i++) {
+        for (int j =0 ; j < COLS; j++) {
+            A[i][j] = (double)i;
+            count++;
+        }
+    }
+    return count;
+}
+int initMatrixB()
+{
+    int count = 0;
+
+    for (int i = 0; i < ROWS; i++) {
+        for (int j =0 ; j < COLS; j++) {
+            B[i][j] = (double)j;
+            count++;
+        }
+    }
+    return count;
+}
+
+int addMatrix()
+{
+    initMatrixA(); //"matA.bin");
+    initMatrixB(); //"matB.bin");
+
+    int count = 0;
+    for (int i = 0; i < ROWS; i++) {
+        for (int j =0 ; j < COLS; j++) {
+            C[i][j] = A[i][j] + B[i][j];
+            assert(C[i][j] == i+j);
+            count++;
+        }
+    }
+    return count;
+}
+
+void testAddMatrix()
+{
+    initMatrixA();
+    initMatrixB();
+
+    addMatrix();
+}
+
+void startAddMatrix()
+{
+    PuCmd cmd;
+
+    cmd[REG_COMMAND] = CMD_START;
+    cmd[REG_FLAGS] = 0xFFFF;
+    cmd[REG_OPCODE] = OP_ADD;
+    cmd[REG_DATAFLAGS] = 0xFFFF;
+    cmd[REG_AADDR] = 0;
+    cmd[REG_ACOLS] = COLS;
+    cmd[REG_AROWS] = ROWS;
+    cmd[REG_BADDR] = 0;
+    cmd[REG_BROWS] = ROWS;
+    cmd[REG_BCOLS] = COLS;
+    cmd[REG_CADDR] = 0;
+    cmd[REG_CROWS] = ROWS;
+    cmd[REG_CCOLS] = COLS;
+
+    writePuCmd(cmd);
+}
+
+
 
 int main(int argc, char* argv[])
 {
@@ -93,7 +175,6 @@ int main(int argc, char* argv[])
     for (int i = 0; i < REG_LIMIT; i++) {
         cmd[i] = 0x100 + (uint32_t)i;
     }
-
 
     testWritePuCmd(cmd);
 

@@ -49,16 +49,27 @@ PuCore4::PuCore4(const PuCore4Params &p) :
     bufferB = new uint8_t[bufferSizeB]();
     bufferC = new uint8_t[bufferSizeC]();
 
-    panic_if((!buffer || !bufferA || !bufferC),
+    panic_if((!buffer || !bufferA || !bufferB || !bufferC),
         "Could not allocate one of the buffers");
 
-    DPRINTF(PuEngine4, "Created a PuCore4 object with buffer of %d\n",
-                        bufferSize);
+    coreLatency = p.core_latency;
+    opcode = p.opcode;
+
+    m_dram2_base = p.dram2_base;
+    // DRAM 2's start address (2G+256MB)
+    m_rom1_base = p.rom1_base;
+    m_rom2_base = p.rom2_base;
+
+    DPRINTF(PuEngine4, "Created a PuCore4 object with buffers of %d, %d, %d\n",
+                        bufferSizeA, bufferSizeB, bufferSizeC);
 }
 
 PuCore4::~PuCore4()
 {
     delete[] buffer;
+    delete[] bufferA;
+    delete[] bufferB;
+    delete[] bufferC;
 }
 
 void
@@ -68,19 +79,6 @@ PuCore4::startup()
     DPRINTF(PuEngine4, "PuCore4: startup() called!\n");
 }
 
-void
-PuCore4::compute(PuCmd *puCmd, PuEngine4 * pue4)
-{
-    DPRINTF(PuEngine4, "PuCore4: Start compute : cmd = %#x\n",\
-                puCmd->get(REG_COMMAND));
-
-    message = "Request Compute from" + pue4->name() +  "!!";
-
-    // Kick off the the first buffer fill. If it can't fill the whole buffer
-    // because of a limited bandwidth, then this function will schedule another
-    // event to finish the fill
-    fillBuffer();
-}
 
 void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
 {
@@ -96,7 +94,6 @@ void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
 
     auto event =  new EventFunctionWrapper(
             [this, pue4]{ OnComplete(pue4); }, "DMA Complete event");
-
 
     DPRINTF(PuEngine4, "PuCore4::Start DMA... at %d \n", curTick());
 
@@ -116,39 +113,128 @@ PuCore4::OnComplete(PuEngine4 * pue4)
 }
 
 void
-PuCore4::processEvent()
+PuCore4::compute(PuCmd * puCmd, PuEngine4 * pue4)
 {
-    DPRINTF(PuEngine4, "PuCore4::processing the event!\n");
+    //puengine4 = pue4;
 
-    // Actually do the "work" of the event
-    fillBuffer();
+    //clean();
+    puCmd->print();
+
+    pue4->setStatus(STS_READY), puCmd->setStatus(STS_READY);
+
+    enum PU_CMD_TYPE cmd = puCmd->getCommand();
+    DPRINTF(PuEngine4, "PuCore4: Start compute : cmd = %#x\n", cmd);
+
+    if (cmd == CMD_START) {
+        switch (puCmd->getOpcode()) {
+            case OP_ADD:
+                startAdd(puCmd, pue4);
+                break;
+            default:
+                panic("PuCore4: Unknown opcode! op = %d\n",
+                    puCmd->getOpcode());
+        };
+
+    } else {
+            DPRINTF(PuEngine4, "PuCore4: Unimplemented cmd = %#x\n", cmd);
+    }
 }
 
 void
-PuCore4::fillBuffer()
+PuCore4::startAdd(PuCmd *cmd, PuEngine4 *pue4)
 {
-    // There better be a message
-    assert(message.length() > 0);
+    DPRINTF(PuEngine4, "PuCore4::start Add!\n");
 
-    // Copy from the message to the buffer per byte.
-    int bytes_copied = 0;
-    for (auto it = message.begin();
-         it < message.end() && bufferUsed < bufferSize - 1;
-         it++, bufferUsed++, bytes_copied++) {
-        // Copy the character into the buffer
-        buffer[bufferUsed] = *it;
+    if (cmd->get(REG_AROWS) != cmd->get(REG_BROWS) ||
+                cmd->get(REG_ACOLS) != cmd->get(REG_BCOLS))
+    {
+        panic("puCore4: startAdd() - invalid size (R,C should be equal");
     }
+    processAdd(cmd,pue4);
+}
 
-    if (bufferUsed < bufferSize - 1) {
-        // Wait for the next copy for as long as it would have taken
-        DPRINTF(PuEngine4,"Scheduling another fillBuffer in %d ticks\n",
-                bandwidth * bytes_copied);
-        schedule(event, curTick() + bandwidth * bytes_copied);
+void
+PuCore4::processAdd(PuCmd *cmd, PuEngine4 *pue4)
+{
+    DPRINTF(PuEngine4, "PuCore4::process Add!\n");
+
+    Addr memA = m_rom1_base + cmd->get(REG_AADDR);
+    Addr memB = m_rom2_base + cmd->get(REG_BADDR);
+    Addr memC = m_dram2_base + cmd->get(REG_CADDR);
+
+    int sizeA = cmd->get(REG_AROWS) * cmd->get(REG_ACOLS) * sizeof(double);
+    int sizeB = cmd->get(REG_BROWS) * cmd->get(REG_BCOLS) * sizeof(double);
+    int sizeC = cmd->get(REG_CROWS) * cmd->get(REG_CCOLS) * sizeof(double);
+
+
+    auto event =  new EventFunctionWrapper(
+            [this, pue4, cmd]{ processAdd(cmd, pue4); }, name()+".add.event");
+
+    if (cmd->getStatus() == STS_READY) {
+        cmd->setStatus(STS_DMARD_A), pue4->setStatus(STS_DMARD_A);
+
+        DPRINTF(PuEngine4, "PuCore4::Start DMA A... at %d \n", curTick());
+        pue4->dmaRead(memA, sizeA, event, (uint8_t *)&bufferB[0]);
+        schedule (event, curTick());
+
+    } else if (cmd->getStatus() == STS_DMARD_A) {
+        cmd->setStatus(STS_DMARD_B), pue4->setStatus(STS_DMARD_B);
+
+        DPRINTF(PuEngine4, "PuCore4::Start DMA B... at %d \n", curTick());
+        pue4->dmaRead(memB, sizeB, event, (uint8_t *)&bufferB[0]);
+        schedule (event, curTick());
+
+    } else if (cmd->getStatus() == STS_DMARD_B) {
+        cmd->setStatus(STS_COMPUTING), pue4->setStatus(STS_COMPUTING);
+        DPRINTF(PuEngine4, "PuCore4::Start Computing at %d \n", curTick());
+        Tick latency =  doAdd(cmd); // actually computing, return latency
+        schedule(event, curTick() + latency);
+
+    } else if (cmd->getStatus() == STS_COMPUTING) {
+        cmd->setStatus(STS_DMAWR_C), pue4->setStatus(STS_DMAWR_C);
+        DPRINTF(PuEngine4, "PuCore4::Start DMA WR to C at %d \n", curTick());
+        pue4->dmaWrite(memC, sizeC, event, (uint8_t *)&bufferC[0]);
+        schedule (event, curTick());
+
+    } else if (cmd->getStatus() == STS_DMAWR_C) {
+        cmd->setStatus(STS_COMPLETED), pue4->setStatus(STS_COMPLETED);
+        DPRINTF(PuEngine4, "PuCore4::Complete Add  at %d \n", curTick());
+        // No more schedule
+
     } else {
-        DPRINTF(PuEngine4, "PuCore4: done copying!\n\n");
-        // Be sure to take into account the time for the last bytes
-        exitSimLoop(buffer, 0, curTick() + bandwidth * bytes_copied);
+        cmd->setStatus(STS_ERROR), pue4->setStatus(STS_ERROR);
+        DPRINTF(PuEngine4, "PuCore4: Unimplemented status = %#x\n",
+                    cmd->getStatus());
     }
+}
+
+Tick
+PuCore4::doAdd(PuCmd *cmd) // C = A + B
+{
+    Tick latency = 0;
+
+    DPRINTF(PuEngine4, "PuCore4: doAdd()\n");
+    cmd->print();
+
+    int count = 0;
+    int COLS = cmd->get(REG_AROWS);
+    int ROWS = cmd->get(REG_ACOLS);
+
+    double **dbA = (double **)&bufferA[0];
+    double **dbB = (double **)&bufferB[0];
+    double **dbC = (double **)&bufferC[0];
+
+    for (int i = 0; i < ROWS; i++) {
+        for (int j =0 ; j < COLS; j++) {
+            dbC[i][j] = dbA[i][j] + dbB[i][j];
+            count++;
+
+            assert(dbC[i][j] == i+j); //just for debugging
+        }
+    }
+
+    latency = count * params().fu_add_latency;
+    return latency;
 }
 
 } // namespace gem5

@@ -91,9 +91,10 @@ PuEngine4::getAddrRanges() const
     uint64_t start = X86PIO_BASE_ADDR + params().pio_addr;
     ranges.push_back(RangeSize(start, params().pio_size));
 
+/*
     DPRINTF(PuEngine4, "Device %s range registered:  %s\n",
             name(), ranges.front().to_string());
-
+*/
     return ranges;
 }
 
