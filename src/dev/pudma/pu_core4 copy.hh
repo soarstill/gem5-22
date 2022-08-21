@@ -57,8 +57,6 @@ class PuCore4 : public SimObject
     PuCore4(const PuCore4Params &p);
     ~PuCore4();
 
-    void startup() override;
-
     /**
      * @brief Compute user request
      *
@@ -68,6 +66,12 @@ class PuCore4 : public SimObject
     void compute(PuCmd * cmd, PuEngine4 * pue4);
     void sayHello(std::string mesg, PuEngine4 *pue4);
 
+    void startup() override;
+
+    void OnComplete(PuEngine4 * pue4);
+
+  EventFunctionWrapper event;
+  void processEvent() {} ;
 private:
     uint8_t *bufferA;
     uint8_t *bufferB;
@@ -79,7 +83,6 @@ private:
 
     std::string opcode ;
     Tick coreLatency;
-    PuEngine4 * puengine4;
 
     Addr m_dram2_base;
     // DRAM 2's start address (2G+256MB)
@@ -94,10 +97,6 @@ private:
     Tick doAdd(PuCmd *cmd); // calulate C = A + B
     EventFunctionWrapper eventAdd;
 
-  void OnComplete(PuEngine4 * pue4);
-
-  EventFunctionWrapper event;
-  void processEvent() {} ;
 
 }; // end class PuCore4
 
