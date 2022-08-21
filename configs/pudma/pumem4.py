@@ -97,27 +97,28 @@ system.puengine4.range = AddrRange(
     system.puengine4.pio_addr + 0x8000000000000000, # X86 PIO Base+
     size=system.puengine4.pio_size)
 
+system.puengine4.pucore4.rom2_base = 0xfff8000000
+
 # PuEngine3 connected to MemBus to get request packets
 system.membus.mem_side_ports = system.puengine4.pio
 system.membus.cpu_side_ports = system.puengine4.dma
 
-#system.puengine4.rom1 =
-# SimpleMemory(image_file=binary('tests/pudma/image/t1000_rom.bin'),
-#           range=AddrRange(0xfff0000000, size='1MB'))
-#system.puengine4.rom1 = SimpleMemory()
+system.puengine4.pucore4.dram2_base = 0x800000000
 
-system.puengine4.rom1_base = 0xfff0000000
-system.puengine4.rom1_size = '10MB'
-system.puengine4.rom1_file = 'configs/pudma/pumem4.py'
-system.puengine4.rom1 = SimpleMemory(image_file=system.puengine4.rom1_file,
-          range=AddrRange(system.puengine4.rom1_base,
-          size=system.puengine4.rom1_size))
+system.puengine4.pucore4.rom1_base = 0xfff0000000
+system.puengine4.pucore4.rom1_size = '10MB'
+system.puengine4.pucore4.rom1_file = 'configs/pudma/pumem4.py'
+system.puengine4.pucore4.rom1 = SimpleMemory(
+        image_file=system.puengine4.rom1_file,
+        range=AddrRange(system.puengine4.rom1_base,
+        size=system.puengine4.rom1_size))
 system.puengine4.rom1.port = system.membus.mem_side_ports
 
-system.puengine4.rom2_base = 0xfff8000000
-system.puengine4.rom2_size = '10MB'
-system.puengine4.rom2_file = 'configs/pudma/pumem4.py'
-system.puengine4.rom2 = SimpleMemory(image_file=system.puengine4.rom2_file,
+system.puengine4.pucore4.rom2_base = 0xfff8000000
+system.puengine4.pucore4.rom2_size = '10MB'
+system.puengine4.pucore4.rom2_file = 'configs/pudma/pumem4.py'
+system.puengine4.pucore4.rom2 = SimpleMemory(
+        image_file=system.puengine4.rom2_file,
           range=AddrRange(system.puengine4.rom2_base,
           size=system.puengine4.rom2_size))
 system.puengine4.rom2.port = system.membus.mem_side_ports

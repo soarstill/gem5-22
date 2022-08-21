@@ -106,11 +106,22 @@ class PuCore4(SimObject):
     opcode = Param.String("add","PU OP + matrix Addition")
     core_latency = Param.Latency('100ns', "PuCore initial latency")
 
+    dram2_base = Param.Addr("DRAM2 base address")
+
+    rom1 = Param.SimpleMemory("Data A memory (RO)")
+    rom1_base = Param.Addr("Data A Bmemory base address")
+    rom1_size = Param.MemorySize("Data A memory size")
+    rom1_file = Param.String("Data A binary file name")
+
+    rom2 = Param.SimpleMemory("Data B memory (RO)")
+    rom2_base = Param.Addr("Data B Bmemory base address")
+    rom2_size = Param.MemorySize("Data B memory size")
+    rom2_file = Param.String("Data B binary file name")
+
     buffer_size = Param.MemorySize('100B',
                                    "Size of buffer to fill with message")
     write_bandwidth = Param.MemoryBandwidth('100MB/s', "Bandwidth to fill "
                                             "the buffer")
-
 class PuEngine4(DmaDevice):
     type = 'PuEngine4'
     cxx_header = "dev/pudma/pu_engine4.hh"
@@ -127,13 +138,4 @@ class PuEngine4(DmaDevice):
     devicename = Param.String('PuEngine4:v1',"User defined device name")
     range = Param.AddrRange("Pio Address AddrRange")
 
-    rom1 = Param.SimpleMemory("Data A memory (RO)")
-    rom1_base = Param.Addr("Data A Bmemory base address")
-    rom1_size = Param.MemorySize("Data A memory size")
-    rom1_file = Param.String("Data A binary file name")
-
-    rom2 = Param.SimpleMemory("Data B memory (RO)")
-    rom2_base = Param.Addr("Data B Bmemory base address")
-    rom2_size = Param.MemorySize("Data B memory size")
-    rom2_file = Param.String("Data B binary file name")
 

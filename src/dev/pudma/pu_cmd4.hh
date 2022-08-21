@@ -115,6 +115,14 @@ enum PU_STATUS_TYPE
     STS_LIMIT
 };
 
+
+enum PU_OP_TYPE
+{
+    OP_INVALID = 0,    // Not a state
+    OP_ADD,             // add operation
+    OP_LIMIT
+};
+
 class PuCmd
 {
 private:
@@ -190,6 +198,16 @@ public:
     enum PU_STATUS_TYPE getStatus()
     {
         return (enum PU_STATUS_TYPE) m_Regs[REG_STATUS];
+    }
+
+    enum PU_CMD_TYPE getCommand()
+    {
+        return (enum PU_CMD_TYPE) m_Regs[REG_COMMAND];
+    }
+
+    enum PU_OP_TYPE getOpcode()
+    {
+        return (enum PU_OP_TYPE) m_Regs[REG_OPCODE];
     }
 
     int valid()
