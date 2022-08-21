@@ -132,14 +132,6 @@ int addMatrix()
     return count;
 }
 
-void testAddMatrix()
-{
-    initMatrixA();
-    initMatrixB();
-
-    addMatrix();
-}
-
 void startAddMatrix()
 {
     PuCmd cmd;
@@ -161,7 +153,15 @@ void startAddMatrix()
     writePuCmd(cmd);
 }
 
+void testAddMatrix()
+{
+    initMatrixA();
+    initMatrixB();
 
+    addMatrix();
+
+    startAddMatrix();
+}
 
 int main(int argc, char* argv[])
 {
@@ -180,8 +180,9 @@ int main(int argc, char* argv[])
 
 
 
-    //TODO: ADD Command test
-    //void startAddMatrix()
+    // TODO: Make bin files for A, B -> pumem4
+    // TODO: ADD Command test
+    // testAddMatrix()
 
     printf("Hello world! - PU Done!\n\n");
 
