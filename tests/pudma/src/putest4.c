@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH cmdaMAGE.
  */
 
-#include "pudmalib2.h"
+#include "pudmalib4.h"
 
 // Unit tests
 int testwritePuCmdUint32(PioAddr_t pio, uint32_t wvalue)

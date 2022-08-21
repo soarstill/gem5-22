@@ -26,7 +26,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH cmdaMAGE.
  */
 
-#include "pudmalib2.h"
+#include "pudmalib4.h"
 
 void asset_valid_range(PioAddr_t pio)
 {
