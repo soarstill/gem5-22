@@ -1,5 +1,5 @@
-SRCS = putest2.c pudmalib2.c
-#OBJS = putest2.o pudmalib2.o
+SRCS = putest4.c pudmalib4.c
+#OBJS = putest4.o pudmalib4.o
 
 TARGET = putest
 

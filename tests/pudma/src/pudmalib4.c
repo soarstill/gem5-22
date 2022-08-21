@@ -26,97 +26,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH cmdaMAGE.
  */
 
-#ifndef __DEV_PUDMA_PUDMALIB_H__
-#define __DEV_PUDMA_PUDMALIB_H__
+#include "pudmalib2.h"
 
-// lib headers
-#include <assert.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/io.h>
-
-typedef unsigned int uint32_t;
-typedef unsigned char uint8_t;
-
-#define DMA_PIO_ADDR (0x300)    // Device dependent, range (0x300~0x700)
-#define DMA_PIO_SIZE (0x400)    // Device dependent, range (0x300~0x700)
-
-#define X86PIO_BASE_ADDR (0x8000000000000000)
-
-typedef struct _PuCmd // DO NOT MODIFY
+void asset_valid_range(PioAddr_t pio)
 {
-    uint32_t valid; // 0 : invalid all, 1 : valid
-    uint32_t status;
-    // status 0: invalid, 1: ready, 2: moving data,
-    // 3: in-computing 4: moving to mem 5: idle
-    uint32_t cmd;
-    // cmd = 0: invalid command, 1: start compute,
-    // 2: abort  3: report status
-    uint32_t flags;
-    uint32_t opcode; // 0: no op, 1: add 2: sub, 3: mul
-    uint32_t addrA; // A buffer physical memory address
-    uint32_t addrB; // B buffer physical memory address
-    uint32_t addrC; // C buffer physical memory address
-    uint32_t sizeA; // size of A
-    uint32_t sizeB; // size of B
-    uint32_t sizeC; // size of C
-} PuCmd;
-
-volatile const unsigned long long pioAddr = 0x300;
-volatile const unsigned long long pioSize = 0x400;
-
-// Not sure to copy this virtual address memory to the gem5 DMA buffers
-float dataA[1024];
-float dataB[1024];
-float dataC[1024];
-
-PuCmd UserCmdReg;
-
-void printPuCmd(PuCmd * cmd)
-{
-    printf("\nPuCmd----\n");
-
-    printf("\t.valid = %#x\n", cmd->valid);
-    printf("\t.status = %#x\n", cmd->status);
-    printf("\t.cmd = %#x\n", cmd->cmd);
-    printf("\t.flags = %#x\n", cmd->flags);
-    printf("\t.opcode = %#x\n", cmd->opcode);
-    printf("\t.addrA = %#x\n", cmd->addrA);
-    printf("\t.addrB = %#x\n", cmd->addrB);
-    printf("\t.addrC = %#x\n", cmd->addrC);
-    printf("\t.sizeA = %#x\n", cmd->sizeA);
-    printf("\t.sizeB = %#x\n", cmd->sizeB);
-    printf("\t.sizeC = %#x\n", cmd->sizeC);
-    printf("PuCmd----\n\n");
-}
-
-int isEqual(PuCmd *cmda, PuCmd * cmdb)
-{
-
-    if ((cmda->valid == cmdb->valid)    &&
-        (cmda->status == cmdb->status)  &&
-        (cmda->cmd == cmdb->cmd)        &&
-        (cmda->opcode == cmdb->opcode)  &&
-        (cmda->flags == cmdb->flags)    &&
-        (cmda->addrA == cmdb->addrA)    &&
-        (cmda->addrB == cmdb->addrB)    &&
-        (cmda->sizeA == cmdb->sizeA)    &&
-        (cmda->sizeB == cmdb->sizeC)    &&
-        (cmda->sizeC == cmdb->sizeC))
-    {
-        return 1;
-    }
-    return 0;
-}
-
-unsigned char writePuByte(unsigned short pio, unsigned char value)
-{
-    if (pio <  DMA_PIO_ADDR || pio >= DMA_PIO_ADDR + DMA_PIO_SIZE) {
-        printf("User writePuByte: Out of PIO range %#x\n", pio);
+    if (!IS_VALID_ADDR(pio)) {
+        printf("Exeption: Out of PIO range of PuEngine %#x\n", pio);
         exit(1);
     }
+}
+
+/**
+ * @brief Write a byte to an address in PuEngine's I/O memory range
+ *
+ * @param pio
+ * @param value
+ * @return uint8_t
+ *  - value : written byte re-read
+ */
+uint8_t writePuCmdByte(PioAddr_t pio, uint8_t value)
+{
+    asset_valid_range(pio);
+
     outb(value, pio); // write to gem5::PuEngine4
 
     unsigned char retval = inb(pio);
@@ -125,96 +56,232 @@ unsigned char writePuByte(unsigned short pio, unsigned char value)
     return retval;
 }
 
-
-unsigned char readPuByte(unsigned short pio)
+uint8_t readPuCmdByte(PioAddr_t pio)
 {
-    if (pio <  DMA_PIO_ADDR || pio >= DMA_PIO_ADDR + DMA_PIO_SIZE) {
-        printf("User readPuByte: Out of PIO range %#x\n", pio);
+    asset_valid_range(pio);
+
+    return inb(pio);
+}
+
+PioAddr_t readPuCmdBytes(PioAddr_t pio, int size, uint8_t * buf)
+{
+    asset_valid_range(pio);
+
+    PioAddr_t addr = pio;
+    for (int i = 0; i < size; i++, addr++) {
+        buf[i] = readPuCmdByte(addr);
+    }
+    return pio;
+}
+
+PioAddr_t writePuCmdBytes(PioAddr_t pio, int size, uint8_t * buf)
+{
+    asset_valid_range(pio);
+
+    PioAddr_t addr = pio;
+    for (int i = 0; i < size; i++, addr++) {
+        writePuCmdByte(addr, buf[i]);
+    }
+}
+
+uint32_t writePuCmdUint32(PioAddr_t pio, uint32_t value)
+{
+    asset_valid_range(pio);
+
+    writePuCmdBytes(pio, sizeof(uint32_t), (uint8_t *)&value);
+
+    // verification
+    uint32_t retVal = 0xFFFFFFFF;
+    readPuCmdBytes(pio, sizeof(uint32_t), (uint8_t *)&retVal);
+    assert(retVal == value);
+
+    return retVal;
+}
+
+
+uint32_t readPuCmdUint32(PioAddr_t pio)
+{
+    uint32_t retVal = 0;
+
+    asset_valid_range(pio);
+
+    readPuCmdBytes(pio, sizeof(uint32_t), (uint8_t *)&retVal);
+
+    return retVal;
+}
+
+uint32_t readPuCmdReg(enum PU_REGS reg)
+{
+    if (reg < 0 || reg >= REG_LIMIT)
+    {
+        printf("Exeption: Out of register index of PuEngine %#x\n", reg);
         exit(1);
     }
-    unsigned char retval = inb(pio);
 
-    return retval;
+    PioAddr_t pio = PUREG_ADDR(reg);
+    asset_valid_range(pio);
+
+    uint32_t retVal = readPuCmdUint32(pio);
+
+    return retVal;
 }
 
-unsigned int readPuInt(unsigned short pio)
+uint32_t writePuCmdReg(enum PU_REGS reg, uint32_t value)
 {
-    if (pio <  DMA_PIO_ADDR || pio >= DMA_PIO_ADDR + DMA_PIO_SIZE) {
-        printf("User readPuInt: Out of PIO range %#x\n", pio);
+    if (reg < 0 || reg >= REG_LIMIT)
+    {
+        printf("Exeption: Out of register index of PuEngine %#x\n", reg);
         exit(1);
     }
-    unsigned int retval = inl(pio);
 
-    return retval;
+    PioAddr_t pio = PUREG_ADDR(reg);
+    asset_valid_range(pio);
+
+    writePuCmdUint32(pio, value);
+
+    // verification
+    uint32_t retVal = readPuCmdUint32(pio);
+
+    assert(retVal == value);
+
+    return retVal;
 }
 
-unsigned int writePuInt(unsigned short pio, unsigned int value)
+
+/**
+ *
+ * @brief int isPuCmdValid() : Check if PuCmd registes are valid
+ *
+ * @return int
+ *  - 1 : true
+ *  - 0 : false
+ */
+int isPuCmdValid()
 {
-    if (pio <  DMA_PIO_ADDR || pio >= DMA_PIO_ADDR + DMA_PIO_SIZE) {
-        printf("User writePuInt: Out of PIO range %#x\n", pio);
-        exit(1);
+
+    const PioAddr_t pioValid = PUREG_ADDR(REG_VALID);
+    uint32_t ret = readPuCmdByte(pioValid);
+
+    return (ret) ?  1 : 0;
+}
+
+void invalidatePuCmd() // lock while writing PuCmd registers (incomplete)
+{
+    const PioAddr_t pioValid = PUREG_ADDR(REG_VALID);
+
+    writePuCmdByte(pioValid, 0);
+}
+
+// for gem5 hooking, if user call validatePuCmd(), then gem5 check that
+// that address and the value is 1, then hook
+void validatePuCmd() // unlock while writing PuCmd registers
+{
+    const PioAddr_t pioValid = PUREG_ADDR(REG_VALID);
+
+    writePuCmdByte(pioValid, 1);
+}
+
+/*
+// for gem5 hooking, if user call validatePuCmd(), then gem5 check that
+int checkPuCmdHook(PioAddr_t pio) // for hooking
+{
+    const PioAddr_t pioValid = PUREG_ADDR(REG_VALID);
+    return  (pioValid == pio) ?  1 : 0;
+}
+*/
+
+/**
+ * @brief return status if PuCmd is valid
+ *
+ * @return * uint32_t
+ *  - 0 : not valid
+ *  - else : status
+ */
+uint32_t readPuCmdStatus()
+{
+    return readPuCmdReg(REG_STATUS);
+}
+
+void initPuCmd(PuCmd cmd)
+{
+    memset(&cmd[0], 0, sizeof(PuCmd));
+}
+
+/**
+ * @brief Compare two contents
+ *
+ * @param cmda
+ * @param cmdb
+ * @return int
+ *
+ */
+int isPuCmdEqual(PuCmd cmda,  PuCmd cmdb)
+{
+    for (int i = 0; i < REG_LIMIT; i++) {
+        if (i = REG_STATUS) continue; // READ ONLY
+        if (cmda[i] != cmdb[i]) return 0;
     }
-    outl(value, pio); // write to gem5::PuEngine4
-
-    unsigned int retval = inl(pio);
-    assert(retval == value);
-
-    return retval;
+    return 1;
 }
 
-int writePuCmd(PuCmd * cmd)
+// forced write regardless of PuEngine
+int writePuCmd(PuCmd cmd)
 {
-    if (!cmd) {
-        return 0; // invalid and error
+    invalidatePuCmd(); // start to transmission (valid = 0)
+
+    PioAddr_t addr = PUREG_ADDR(REG_STATUS) ; // the 2nd register
+    PioAddr_t end = PUREG_ADDR(REG_LIMIT);
+    uint8_t * pValue = (uint8_t *)&cmd[REG_STATUS];
+    for (; addr < end; addr++, pValue++) {
+        if (addr == PUREG_ADDR(REG_STATUS)) continue; // READ ONLY
+        writePuCmdByte(addr, *pValue );
     }
-    const unsigned short addrValid = pioAddr;
-    unsigned short addr = pioAddr;
 
-    // NEVER change the order : just follow PuCmd structure
-    writePuInt(addrValid, 0 );       addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->status);   addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->cmd);      addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->opcode);   addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->opcode );  addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->flags);    addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->addrA );   addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->addrB );   addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->sizeA );   addr += sizeof(uint32_t);
-    writePuInt(addr, cmd->sizeB );   addr += sizeof(uint32_t);
-    writePuInt(addrValid, cmd->valid);       // validate after write
-    // NEVER change the order : just follow PuCmd structure
+    validatePuCmd(); //finish transmission (valid = 1) -> gem5 hook
 
-    // validate
-    int retValid = readPuInt(addrValid);
-    if (retValid) {
-        UserCmdReg = *cmd; // Update User Level PuCmdRegister
+    return 1;
+}
+
+
+/**
+ * @brief return PuEngin's PuCmd Registers into cmd
+ *
+ * @param cmd Read all the PuEngine registers including valid reg.
+ * @return int
+ */
+int readPuCmd(PuCmd cmd)
+{
+    /* for gem5
+    if (!isPuCmdValid()) {
+            return 0;
     }
-    return retValid; // 0: invalid (fail), 1: valid (success)
+   */
+    PioAddr_t addr = PUREG_ADDR(REG_VALID); // the first reg.
+    PioAddr_t end = PUREG_ADDR(REG_LIMIT);
+    uint8_t * pValue = (uint8_t *)&cmd[REG_VALID];
+    for (int i = 0; addr < end; addr++, pValue++) {
+        pValue[i] = readPuCmdByte(addr);
+    }
+
+    return 1;
 }
 
-uint32_t readPuStatus()
+void printPuCmd(PuCmd cmd)
 {
-    const unsigned short validAddr = pioAddr;
-    const unsigned short statusAddr = pioAddr + 1 * sizeof(uint32_t);
-
-    uint32_t status = 0xFFFFFFFF; // NOT a state
-
-    uint32_t valid = readPuInt(validAddr);
-    uint32_t retStatus = readPuInt(statusAddr);
-    if (valid) status = retStatus;
-
-    // fail: 0xFFFFFFFF (invalid status), success otherwise (valid status)
-    return  status;
+    printf("\nBEGIN PuCmd-----------------\n");
+    printf("    .REG_VALID = %#x\n", cmd[REG_VALID]);
+    printf("    .REG_STATUS = %#x\n",cmd[REG_STATUS]);
+    printf("    .REG_COMMAND = %#x\n", cmd[REG_COMMAND]);
+    printf("    .REG_FLAGS = %#x\n", cmd[REG_FLAGS]);
+    printf("    .REG_OPCODE = %#x\n",cmd[REG_OPCODE]);
+    printf("    .REG_AADDR = %#x\n", cmd[REG_AADDR]);
+    printf("    .REG_AROWS = %#x\n", cmd[REG_AROWS]);
+    printf("    .REG_ACOLS = %#x\n", cmd[REG_ACOLS]);
+    printf("    .REG_BADDR = %#x\n", cmd[REG_BADDR]);
+    printf("    .REG_BROWS = %#x\n", cmd[REG_BROWS]);
+    printf("    .REG_BCOLS = %#x\n", cmd[REG_BCOLS]);
+    printf("    .REG_CADDR = %#x\n", cmd[REG_CADDR]);
+    printf("    .REG_CROWS = %#x\n", cmd[REG_CROWS]);
+    printf("    .REG_CCOLS = %#x\n", cmd[REG_CCOLS]);
+    printf("END PuCmd----------------\n\n");
 }
-
-uint32_t writePuStatus(uint32_t status)
-{
-    const unsigned short validAddr = pioAddr;
-    const unsigned short statusAddr = pioAddr + 1 * sizeof(uint32_t);
-
-    uint32_t retStatus = writePuInt(statusAddr, status);
-
-    return  retStatus;
-}
-
-#endif // __DEV_PUDMA_PUDMALIB_H__

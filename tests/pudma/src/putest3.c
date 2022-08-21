@@ -26,13 +26,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH cmdaMAGE.
  */
 
-#include "pudmalib2.h"
+#include "pudmalib.h"
 
 // Unit tests
-int testwritePuCmdUint32(PioAddr_t pio, uint32_t wvalue)
+int testWRint(unsigned short pio, unsigned int wvalue)
 {
 
-    uint32_t retval = writePuCmdUint32(pio, wvalue);
+    unsigned int retval = writePuInt(pio, wvalue);
 
     printf("Hello: testWRint read = %#x %s\n",
         retval, retval==wvalue ? "SUCCESS" : "FAIL"); // should be the same
@@ -41,10 +41,10 @@ int testwritePuCmdUint32(PioAddr_t pio, uint32_t wvalue)
 }
 
 
-int testWRbyte(PioAddr_t pio, uint8_t wvalue)
+int testWRbyte(unsigned short pio, unsigned char wvalue)
 {
 
-    uint32_t retval = writePuCmdByte(pio, wvalue);
+    unsigned int retval = writePuByte(pio, wvalue);
 
     printf("Hello: testWRbyte read = %#x %s\n",
         retval, retval==wvalue ? "SUCCESS" : "FAIL"); // should be the same
@@ -52,46 +52,76 @@ int testWRbyte(PioAddr_t pio, uint8_t wvalue)
     return retval;
 }
 
-int testWritePuCmd(PuCmd cmd)
+void test11() // success
 {
+    int value = 0x9;
+    int ret = 0x0;
+    unsigned short pio = 0x350;
 
-    printf("PuCmd to be written\n");
-    printPuCmd(cmd);
+    ret = testWRbyte(pio, value);
 
-    writePuCmd(cmd);
+    ret = testWRint(pio + 0x100, value+0x100);
+}
 
 
-    PuCmd ret;
-    initPuCmd(ret);
-    readPuCmd(ret);
+void test12() // success
+{
+    int value = 0x9;
+    int ret = 0x0;
+    unsigned short pio = 0x350;
 
-    printf("PuCmd re-read\n");
-    printPuCmd(ret);
+    ret = testWRint(pio + 0x500, value+0x100);
+}
 
-    // success or failure of the test
-    if ( isPuCmdEqual(cmd,ret)) {
-        printf("testWritePuCmd : SUCCESS\n");
-        return 1;
-    } else {
-        printf("testWritePuCmd : FAIL\n");
-        return 0;
-    }
+void testHookByte(unsigned char cmd)
+{
+    writePuByte(0x300, cmd); // Valid dma command
+    printf("Hello User Hook! - %#8x\n", cmd);
+}
+
+void testHookInt(unsigned int cmd)
+{
+    writePuInt(0x300, cmd); // Valid dma command
+    printf("Hello User Hook! - %#8x\n", cmd);
+}
+
+void testHookPuCmd(PuCmd * cmd)
+{
+    writePuInt(0x300, cmd->status); // Valid dma command
+    printf("Hello User Hook! - %#8x\n", cmd->status);
+}
+
+int testWritePuStatus(uint32_t status)
+{
+    writePuStatus(status); // Valid dma command
+    int retStatus = readPuStatus();
+
+    printf("testWritePuStatus : %s\n",
+        (status == retStatus) ? "SUCCESS" : "FAIL");
+
+    return 0;
+}
+
+int testWritePuCmd(PuCmd * cmd)
+{
+    int ret =  writePuCmd(cmd);
+    printf("testWritePuCmd : %s\n", (ret) ? "SUCCESS" : "FAIL");
+
+    return 0;
 }
 
 int main(int argc, char* argv[])
 {
     printf("Hello world! - PU\n");
 
-    PuCmd cmd ;
+    //testHookByte(0x23);
+    //testHookInt(0x345);
 
-    initPuCmd(cmd);
+    testWritePuStatus(0x678);
 
-    // dummy data
-    for (int i = 0; i < sizeof(enum PU_REGS); i++) {
-        cmd[i] = 0x100 + i;
-    }
+    PuCmd cmd = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10};
 
-    testWritePuCmd(cmd);
+    testWritePuCmd(&cmd);
 
     printf("Hello world! - PU Done!\n\n");
 
@@ -101,7 +131,7 @@ int main(int argc, char* argv[])
     // 10000000000 = about 3 seconds in bear metal
     //while (count--);
 
-   // printf("Hello world! - after while () - terminated. !\n\n");
+   printf("Hello world! - after while () - terminated. !\n\n");
 
     return 0;
 }
