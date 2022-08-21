@@ -91,8 +91,9 @@ int main(int argc, char* argv[])
 
     // dummy data
     for (int i = 0; i < REG_LIMIT; i++) {
-        cmd[i] = 0x100 + i;
+        cmd[i] = 0x100 + (uint32_t)i;
     }
+
 
     testWritePuCmd(cmd);
 

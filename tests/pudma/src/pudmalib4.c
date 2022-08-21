@@ -197,10 +197,10 @@ int checkPuCmdHook(PioAddr_t pio) // for hooking
  *  - 0 : not valid
  *  - else : status
  */
-uint32_t readPuCmdStatus()
-{
-    return readPuCmdReg(REG_STATUS);
-}
+//enum PU_STATUS readPuCmdStatus()
+//{
+ //   return (enum PU_STATUS)readPuCmdReg(REG_STATUS);
+//}
 
 void initPuCmd(PuCmd cmd)
 {

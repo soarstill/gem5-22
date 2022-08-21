@@ -74,15 +74,9 @@ namespace gem5
 //////////////////////////////////////////////////////////////////////
 enum PU_REGS
 {
-    REG_VALID = 0,
-        //  (invalid while user updates the Regs, then valid if done)
-        // 0 : invalid, !0 : valid
-    REG_STATUS, // status of PuEngine;  (USER READ ONLY, GEM5 R/W)
-        // 0: invalid, 1: ready, 2: DMA read source data A, B,
-        // 3: in-computing 4: DNA write results C 5: completed
-    REG_COMMAND,
-        // 0: invalid command, 1: ready 2. start computing,
-        // 3: abort PuCore  4: update PuCore status
+    REG_VALID = 0, // validate/inval- PuCmd info.
+    REG_STATUS, // (USER READ ONLY, GEM5 R/W) See PU_STATUS_TYPE
+    REG_COMMAND, // See PU_CMD_TYPE
     REG_FLAGS,  // Not yet defined
     REG_OPCODE, // 0: NOP, 1: ADD, 2~ : Reserved
     REG_DATAFLAGS, // Not yed defined
@@ -167,6 +161,11 @@ public:
         return size;
     }
 
+    uint8_t * getMemPtr()
+    {
+        return (uint8_t *)&m_Regs[0];
+    }
+
     uint32_t & operator[] (int idx) {
         assert (idx >= 0 && idx < REG_LIMIT);
 
@@ -218,7 +217,7 @@ public:
 
     void print()
     {
-        printf("\nBEGIN PuCmd-----------------\n");
+        printf("\nBEGIN Gem5 PuCmd-----------------\n");
         printf("    .REG_VALID = %#x\n", m_Regs[REG_VALID]);
         printf("    .REG_STATUS = %#x\n",m_Regs[REG_STATUS]);
         printf("    .REG_COMMAND = %#x\n", m_Regs[REG_COMMAND]);
@@ -233,7 +232,7 @@ public:
         printf("    .REG_CADDR = %#x\n", m_Regs[REG_CADDR]);
         printf("    .REG_CROWS = %#x\n", m_Regs[REG_CROWS]);
         printf("    .REG_CCOLS = %#x\n", m_Regs[REG_CCOLS]);
-        printf("END PuCmd----------------\n\n");
+        printf("END Gem5 PuCmd----------------\n\n");
     }
 
 };

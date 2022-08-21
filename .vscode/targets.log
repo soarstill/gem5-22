@@ -1,0 +1,840 @@
+make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+# GNU Make 4.1
+# Built for x86_64-pc-linux-gnu
+# Copyright (C) 1988-2014 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Sun Aug 21 18:30:31 2022
+
+# Variables
+
+# automatic
+<D = $(patsubst %/,%,$(dir $<))
+# automatic
+?F = $(notdir $?)
+# default
+.SHELLFLAGS := -c
+# environment
+_VIRTUALENVWRAPPER_API =  mkvirtualenv rmvirtualenv lsvirtualenv showvirtualenv workon add2virtualenv cdsitepackages cdvirtualenv lssitepackages toggleglobalsitepackages cpvirtualenv setvirtualenvproject mkproject cdproject mktmpenv
+# environment
+VSCODE_AGENT_FOLDER = /Home2/hssong/.vscode-server
+# automatic
+?D = $(patsubst %/,%,$(dir $?))
+# makefile (from 'Makefile', line 55)
+PUTEST_SRC = ./tests/pudma/src
+# automatic
+@D = $(patsubst %/,%,$(dir $@))
+# automatic
+@F = $(notdir $@)
+# default
+MAKE_VERSION := 4.1
+# makefile
+CURDIR := /Home2/hssong/Next_Generation_Memory_Platform/gem5-22
+# makefile
+SHELL = /bin/sh
+# makefile (from 'Makefile', line 231)
+BM = 'Quicksort'
+# environment
+VSCODE_NLS_CONFIG = {"locale":"ko","availableLanguages":{"*":"ko"},"_languagePackId":"d4733d4bd5138ffb2c9d12a76b2e9102.ko","_translationsConfigFile":"/Home2/hssong/.vscode-server/data/clp/d4733d4bd5138ffb2c9d12a76b2e9102.ko/tcf.json","_cacheRoot":"/Home2/hssong/.vscode-server/data/clp/d4733d4bd5138ffb2c9d12a76b2e9102.ko","_resolvedLanguagePackCoreLocation":"/Home2/hssong/.vscode-server/data/clp/d4733d4bd5138ffb2c9d12a76b2e9102.ko/e4503b30fc78200f846c62cf8091b76ff5547662","_corruptedFile":"/Home2/hssong/.vscode-server/data/clp/d4733d4bd5138ffb2c9d12a76b2e9102.ko/corrupted.info","_languagePackSupport":true}
+# environment
+_ = /Home2/hssong/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/node
+# makefile (from 'Makefile.nw', line 1)
+MAKEFILE_LIST :=  Makefile Makefile.nw
+# 'override' directive
+GNUMAKEFLAGS := 
+# environment
+MAKELEVEL := 0
+# environment
+XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
+# environment
+LC_NAME = ko_KR.UTF-8
+# environment
+VSCODE_CWD = /Home2/hssong
+# environment
+SSH_CONNECTION = 61.74.232.182 61359 61.74.232.190 22
+# environment
+PATH = /Home2/hssong/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/bin/remote-cli:/Tools/cuda-10.0/bin:/Home2/hssong/bin:/Home2/hssong/.local/bin:/bin:/usr/local/bin:/usr/bin:/usr/sbin
+# makefile (from 'Makefile', line 8)
+SCONS_CMD = python3 /Tools/scons/scripts/scons.py
+# environment
+XDG_RUNTIME_DIR = /run/user/70001
+# makefile (from 'Makefile', line 249)
+CPUS = 4
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+# makefile (from 'Makefile', line 52)
+PUTEST = putest
+# automatic
+%F = $(notdir $%)
+# makefile (from 'Makefile', line 11)
+N_CPU = 4
+# environment
+PWD = /Home2/hssong/Next_Generation_Memory_Platform/gem5-22
+# environment
+QT_QPA_PLATFORMTHEME = appmenu-qt5
+# environment
+VSCODE_IPC_HOOK_CLI = /run/user/70001/vscode-ipc-a29b22ad-98fa-4b62-93cf-718474ec442f.sock
+# automatic
+*D = $(patsubst %/,%,$(dir $*))
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+HOME = /Home2/hssong
+# makefile (from 'Makefile', line 250)
+OUTDIR = m5out_afs
+# environment
+LD_LIBRARY_PATH = /Tools/cuda-10.0/lib64:/Tools/cuda-10.0/lib64/stubs:/usr/local/lib
+# environment
+CUDA_HOME = /Tools/cuda-10.0
+# environment
+LOGNAME = hssong
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+# automatic
++F = $(notdir $+)
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# automatic
+^D = $(patsubst %/,%,$(dir $^))
+# environment
+LC_TIME = ko_KR.UTF-8
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+SHLVL = 3
+# makefile (from 'Makefile', line 53)
+PUTEST_X86 = ./tests/pudma/bin/x86/linux/$(PUTEST)32-static
+# environment
+XDG_SESSION_ID = 4803
+# environment
+USER = hssong
+# environment
+LC_MONETARY = ko_KR.UTF-8
+# makefile
+.DEFAULT_GOAL := all
+# automatic
+%D = $(patsubst %/,%,$(dir $%))
+# environment
+LC_TELEPHONE = ko_KR.UTF-8
+# makefile (from 'Makefile', line 57)
+M5OUT_PUTEST = ./m5out/pudma
+# default
+MAKE_COMMAND := make
+# default
+.VARIABLES := 
+# automatic
+*F = $(notdir $*)
+# environment
+LANGUAGE = ko_KR:ko:en_GB:en
+# makefile
+MAKEFLAGS = pqrR
+# environment
+MFLAGS = -pqrR
+# environment
+SSH_CLIENT = 61.74.232.182 61359 22
+# environment
+MAIL = /var/mail/hssong
+# automatic
++D = $(patsubst %/,%,$(dir $+))
+# makefile (from 'Makefile', line 251)
+M5_PATH = /Data/Gem5/aarch-system-201901106
+# environment
+BROWSER = /Home2/hssong/.vscode-server/bin/e4503b30fc78200f846c62cf8091b76ff5547662/bin/helpers/browser.sh
+# environment
+VSCODE_HANDLES_SIGPIPE = true
+# default
+MAKEFILES := 
+# makefile (from 'Makefile', line 54)
+PUTEST_ARM = ./tests/pudma/bin/arm/linux/$(PUTEST)32-static
+# environment
+LC_NUMERIC = ko_KR.UTF-8
+# automatic
+<F = $(notdir $<)
+# environment
+VIRTUALENVWRAPPER_SCRIPT = /usr/share/virtualenvwrapper/virtualenvwrapper.sh
+# automatic
+^F = $(notdir $^)
+# environment
+LC_MEASUREMENT = ko_KR.UTF-8
+# environment
+LC_ALL = C
+# environment
+LC_PAPER = ko_KR.UTF-8
+# default
+SUFFIXES := 
+# default
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+# environment
+LC_IDENTIFICATION = ko_KR.UTF-8
+# default
+.RECIPEPREFIX := 
+# environment
+LC_ADDRESS = ko_KR.UTF-8
+# default
+MAKE_HOST := x86_64-pc-linux-gnu
+# environment
+LANG = C
+# variable set hash-table stats:
+# Load=85/1024=8%, Rehash=0, Collisions=13/136=10%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (device 2081, inode 85389337): 34 files, no impossibilities.
+
+# 34 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+pumem: tests/pudma/bin/x86/linux/putest32-static
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 100):
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem \
+		--debug-flags=PUDMA \
+		configs/pudma/pumem.py
+	@echo "See $(M5OUT_PUTEST)/pumem directory\n\n"
+
+hpisebm:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 234):
+	./build/ARM/gem5.opt -d se_results/${BM} configs/example/arm/starter_se.py \
+		--cpu="hpi" ../se-benchmarks/${BM}
+
+p2h:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 160):
+	./build/X86/gem5.opt configs/learning_gem5/part2/putest_goodbye.py
+
+gmesh:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 337):
+	./build/ARM/gem5.opt \
+		configs/example/ruby_random_test.py  \
+		--num-cpus=16 \
+		--num-dirs=16  \
+		--network=garnet \
+		--topology=Mesh_XY \
+		--mesh-rows=4  
+
+# Not a target:
+Makefile.nw:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-21 17:11:30.487827249
+#  File has been updated.
+#  Successfully updated.
+
+amn:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 239):
+	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" \
+		../Mobilenet_CPP/mobilenet_arm
+
+p3rc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 176):
+	./build/X86/gem5.opt configs/learning_gem5/part3/ruby_caches_MI_example.py
+
+armfs64:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 303):
+	export M5_PATH=$(M5_PATH)
+	./build/ARM/gem5.opt configs/example/arm/starter_fs.py --cpu "hpi" --num-cores 4 \
+		--mem-size "8GB"
+		--kernel $(M5_PATH)/binaries/vmlinux.arm64 \
+		--disk-image=$(M5_PATH)/disks/aarch64-ubuntu-trusty-headless.img
+
+armfsm:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 297):
+	export M5_PATH=$(M5_PATH)
+	./build/ARM/gem5.opt configs/example/arm/starter_fs.py --cpu "hpi" --num-cores ${N_CPU} \
+		--kernel /Data/Gem5/arm/binaries/vmlinux.arm \
+		--disk-image=$(M5_PATH)/images/MobileNet/aarch64-ubuntu-trusty-headless.img
+
+p1t:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+ 
+#  recipe to execute (from 'Makefile', line 154):
+	./build/X86/gem5.opt configs/learning_gem5/part1/two_level.py
+	echo "See m5out directory"
+
+armfs:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 279):
+	export M5_PATH=$(M5_PATH)
+	./build/ARM/gem5.opt \
+		--outdir=m5out_armfs \
+		configs/example/arm/starter_fs.py \
+		--cpu "hpi" --num-cores $(N_CPU) \
+		--disk-image=$(M5_PATH)/disks/linaro-minimal-aarch64.img \
+		--dtb=$(M5_PATH)/binaries/armv7_gem5_v1_$(N_CPU)cpu.20170616.dtb \
+		--kernel $(M5_PATH)/binaries/vmlinux.arm
+	#	--bootloader $(M5_PATH)/binaries/boot.arm64
+	#	--root=/dev/sda \
+	#	--disk-image=$(M5_PATH)/disks/aarch64-ubuntu-trusty-headless.img \
+	#	--disk-image $(M5_PATH)/ubuntu-18.04-arm64-docker.img
+	#	--disk-image $(M5_PATH)/disks/m5_exit.squashfs.arm
+	#	--disk-image=$(M5_PATH)/images/MobileNet/aarch64-ubuntu-trusty-headless.img
+	#	--disk-image=$(M5_PATH)/disks/aarch64-ubuntu-trusty-headless.img
+
+all:
+#  Command line target.
+#  Implicit rule search has not been done.
+#  Implicit/static pattern stem: ''
+#  File does not exist.
+#  File has been updated.
+#  Needs to be updated (-q is set).
+# automatic
+# @ := all
+# automatic
+# % := 
+# automatic
+# * := 
+# automatic
+# + := 
+# automatic
+# | := 
+# automatic
+# < := 
+# automatic
+# ^ := 
+# automatic
+# ? := 
+# variable set hash-table stats:
+# Load=8/32=25%, Rehash=0, Collisions=1/12=8%
+#  recipe to execute (from 'Makefile', line 20):
+	 @echo "Build: X86 ARM MIPS POWER"
+	 @echo "	Requires python3 >= 3.5 (recommend 3.7)"
+	 @echo "	Do export M5_PATH=$(M5_PATH) first for ARM full system"
+	 @echo "Part1: p1s p1t"
+	 @echo "Part2: p2h p2s p2c p2m"
+	 @echo "Part3: p3mc p3rc p3rt p3sr p3ts"
+	 @echo "examples: armwj fs arm_bl term"
+	 @echo "	xfs	X86 Linux Full System"
+	 @echo "	armwj	ARM Linux Full System"
+	 @echo "	fs_bl	X86 Full System for ARM Big-Littel Architecture"
+	 @echo "	term	Connect dummy terminal to Full System"
+	 @echo "	xmn	MobileNet v2"
+	 @echo "ARM Research Starter Kit:"
+	 @echo "	armse	ARM Starter SE Mode"
+	 @echo "	armse2	ARM Starter SE Mode with 2 cores"
+	 @echo "	armfs	ARM Linux Full System"
+	 @echo "	arms	ARM Starter Kit"
+	 @echo "	hpise	HPI Model SE Mode"
+	 @echo "	hpise2	HPI Model SE Mode with 2 cores"
+	 @echo "	hpisebm	HPI Model SE Mode Benchmarks"
+	 @echo "	hpifs	HPI Model FS Mode"
+	 @echo "	amn	MobileNet v2 with ARM HPI"
+	 @echo "Memory System"
+	 @echo "	MI	MI example"
+	 @echo "nw: Network Interface Simulation"
+	 @echo "pu: PU DMA ENgine"
+
+armwj:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 188):
+	build/ARM/gem5.opt configs/example/arm_fs.py --kernel /Data/Gem5/arm/binaries/vmlinux.arm64 --disk disks/arm/aarch64-ubuntu-trusty-headless.img --bootloader /Data/Gem5/arm/binaries/boot.arm64
+
+term: util/term/m5term
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 326):
+	./util/term/m5term localhost 3456
+
+umnt:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 362):
+	sudo umount imgdir
+
+purestore:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 73):
+	cp -r PUDMA-backup/configs/pudma configs/pudma
+	cp -r PUDMA-backup/tests/pudma tests/pudma
+	cp -r PUDMA-backup/src/dev/pudma src/dev/pudma 
+	cp PUDMA-backup/Makefile ./Makefile
+
+pro4:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 28):
+	scons RUBY=TRUE PROTOCOL=MOESI_hammer build/X86/gem5.opt
+
+# Not a target:
+.SUFFIXES:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+armse2: tests/putest/bin/arm/linux/putest
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 206):
+	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
+		--num-cores 2 \
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest"
+
+MIPS:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 141):
+	$(SCONS_CMD) build/MIPS/gem5.opt -j8
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  Last modified 2022-08-21 17:24:59.778753956
+#  File has been updated.
+#  Successfully updated.
+
+tests/pudma/bin/x86/linux/putest32-static: tests/pudma/src/putest.c
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 60):
+	cd $(PUTEST_SRC); make -f Makefile.x86
+
+ARM:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 138):
+	$(SCONS_CMD) build/ARM/gem5.opt -j8
+
+pro3:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 25):
+	scons RUBY=TRUE PROTOCOL=MI_example build/X86/gem5.opt
+
+pumem2: tests/pudma/bin/x86/linux/putest32-static
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 93):
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem2\
+		--debug-flags=PuEngine2 \
+		configs/pudma/pumem2.py
+	@echo "See $(M5OUT_PUTEST)/pumem2 directory\n\n"
+
+xfs:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 322):
+	@echo "Execute in another terminal ./util/term/m5term localhost 3456"
+	./build/X86/gem5.opt configs/example/fs.py
+
+hpise: tests/putest/bin/arm/linux/putest
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 221):
+	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" --num-cores 1 \
+		"tests/putest/bin/arm/linux/putest"
+
+# Not a target:
+tests/pudma/src/putest.c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+armse4: tests/putest/bin/arm/linux/putest
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 212):
+	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
+		--num-cores 4 \
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest" \
+		"tests/putest/bin/arm/linux/putest"
+
+pubackup:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 63):
+	mkdir -p PUDMA-backup; tar cfz PUDMA-backup.old PUDMA-backup
+	mkdir -p PUDMA-backup/configs; cp -r configs/pudma PUDMA-backup/configs/.
+	mkdir -p PUDMA-backup/tests;  cp -r tests/pudma PUDMA-backup/tests/.
+	mkdir -p PUDMA-backup/src; mkdir -p PUDMA-backup/src/dev; 
+	cp -r src/dev/pudma PUDMA-backup/src/dev/. 
+	cp Makefile PUDMA-backup/.
+	tar cvfz PUDMA-backup.tgz PUDMA-backup
+	@echo "See directory PUDMA-backup and PUDMA-backup.tgz"
+
+cb: output
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 38):
+	cd gem5; time ./build/X86/gem5.opt \
+	    --outdir=output/Crossbar_cpu$(CPUS)\
+	    configs/example/ruby_random_test.py --num-cpus=$(CPUS)
+
+pusimple: tests/pudma/bin/x86/linux/putest32-static
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 116):
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pusimple \
+		--debug-flags=PUDMA \
+		configs/pudma/pusimple.py
+	@echo "See $(M5OUT_PUTEST)/pusimple directory\n\n"
+
+me: output
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 45):
+	cd gem5; time ./build/X86/gem5.opt \
+		--outdir=output/Mesh_cpu$(CPUS)\
+		configs/example/ruby_random_test.py --num-cpus=$(CPUS) --num-dirs=$(CPUS) --topology=Mesh_XY --mesh-rows=$(CPUS)
+
+p2m:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 169):
+	./build/X86/gem5.opt configs/learning_gem5/part2/simple_memobj.py
+
+X86:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 135):
+	$(SCONS_CMD) build/X86/gem5.opt -j8
+
+MI:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 333):
+	@echo "ruby/MI example"
+	./build/X86/gem5.opt configs/ruby/MI_example.py
+
+hpifs:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 244):
+	time ./build/ARM/gem5.opt configs/example/arm/starter_fs.py --cpu="hpi" --num-cores 1 \
+		--disk-image=$(M5_PATH)/disks/linaro-minimal-aarch64.img
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+pu: tests/pudma/bin/x86/linux/putest32-static
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+ 
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 108):
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/puse \
+		--debug-flags=PUDMA \
+		configs/pudma/puse.py --cmd=$(PUTEST_X86)
+	@echo "See $(M5OUT_PUTEST)/puse directory\n\n"
+
+pumem4: tests/pudma/bin/x86/linux/putest32-static
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 79):
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem4 \
+		--debug-flags=PuEngine4 \
+		configs/pudma/pumem4.py
+	@echo "See $(M5OUT_PUTEST)/pumem4 directory\n\n"
+
+p3ts:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 185):
+	./build/X86/gem5.opt configs/learning_gem5/part3/test_caches.py
+
+pro1:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 19):
+	scons RUBY=TRUE PROTOCOL=MESI_Two_Level build/X86/gem5.opt
+
+p1s:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 149):
+	./build/X86/gem5.opt configs/learning_gem5/part1/simple.py
+	echo "See m5out directory"
+
+tests/putest/bin/arm/linux/putest:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 229):
+	cd tests/putest/src; make -f Makefile.arm
+
+xmn:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 192):
+	time ./build/X86/gem5.opt configs/example/se.py \
+		-c ../Mobilenet_CPP/mobilenet
+
+pumem3: tests/pudma/bin/x86/linux/putest32-static
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 86):
+	./build/X86/gem5.opt \
+	   	--outdir=$(M5OUT_PUTEST)/pumem3 \
+		--debug-flags=PuEngine2,PuEngine3 \
+		configs/pudma/pumem3.py
+	@echo "See $(M5OUT_PUTEST)/pumem3 directory\n\n"
+
+p3mc:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 173):
+	./build/X86/gem5.opt configs/learning_gem5/part3/msi_caches.py
+
+mnt:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 359):
+	sudo mount -o loop,offset=32256 disks/arm/aarch64-ubuntu-trusty-headless.img imgdir
+
+p3sr:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 182):
+	./build/X86/gem5.opt configs/learning_gem5/part3/simple_ruby.py
+
+output:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 50):
+	mkdir -p output
+
+arm_bl:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 347):
+	export M5_PATH=$(M5_PATH)
+	./build/ARM/gem5.opt configs/example/arm/fs_bigLITTLE.py \
+		--cpu-type=exynos --caches \
+		--dtb=$(M5_PATH)/binaries/armv8_gem5_v1_big_little_2_2.dtb \
+		--disk=$(M5_PATH)/disks/
+		--kernel=$(M5_PATH)/binaries/vmlinux \
+		--bootscript=$(M5_PATH)/binaries/boot.arm
+		# --bm=home/nitesh/G/gem5/rodinia/rodinia/openmp/heartwall/heartwall
+		--kernel $(M5_PATH)/binaries/vmlinux.arm64 --disk $(M5_PATH)/aarch64-ubuntu-trusty-headless.img --bootloader $(M5_PATH)/binaries/boot.arm64
+
+nw:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 3):
+	@ echo "ruby_random_test.py : comparing network protocols of Gem5 simulator "
+	@ echo "	* Build gem5 for target protocol"
+	@ echo "	pro1 : MESI_Two_Level"
+	@ echo "	pro2 : MESI_Three_Level"
+	@ echo "	pro3 : MI_example"
+	@ echo "	pro4 : MOESI_hammer"
+	@ echo "	pro5 : MSI"
+	@ echo "-----------------------------------------------------------------------------"
+	@ echo " CPUS=?? cb : 1|2|4|8|16|32 number of cpus in Crossbar Topology"
+	@ echo " CPUS=?? me : 1|2|4|8|16|32 number of cpus, dirs, mesh rows in Mesh_XY Topology"
+
+git-soarstill:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 123):
+	git config --global user.name soarstill
+	git config --global user.email soarstill@gmail
+	git config --global credential.helper cache
+	git config --global push.default simple
+
+pro2:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 22):
+	scons RUBY=TRUE PROTOCOL=MESI_Three_Level build/X86/gem5.opt
+
+armse: tests/putest/bin/arm/linux/putest
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 201):
+	./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="minor" \
+		"tests/putest/bin/arm/linux/putest"
+
+p2c:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 166):
+	./build/X86/gem5.opt configs/learning_gem5/part2/simple_cache.py
+
+p2s:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 163):
+	./build/X86/gem5.opt configs/learning_gem5/part2/run_simple.py
+
+util/term/m5term:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 329):
+	cd ./util/term; make
+
+POWER:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 144):
+	$(SCONS_CMD) build/POWER/gem5.opt -j8
+
+pro5:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile.nw', line 31):
+	scons RUBY=TRUE PROTOCOL=MSI build/X86/gem5.opt
+
+hpise2: tests/putest/bin/arm/linux/putest
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 225):
+	time ./build/ARM/gem5.opt configs/example/arm/starter_se.py --cpu="hpi" --num-cores 2 \
+		"tests/putest/bin/arm/linux/putest" "tests/putest/bin/arm/linux/putest"
+
+p3rt:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 179):
+	./build/X86/gem5.opt configs/learning_gem5/part3/ruby_test.py
+
+afs:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 254):
+	export M5_PATH=/Data/Gem5/aarch-system-201901106
+	./build/ARM/gem5.opt \
+		--outdir=$(OUTDIR) \
+		configs/example/fs.py \
+		--cpu-clock=1GHz \
+		--cpu-type="HPI" \
+		-n $(CPUS) \
+		--machine-type=VExpress_GEM5_V1 \
+		--dtb-file=$(M5_PATH)/binaries/armv8_gem5_v1_$(CPUS)cpu.dtb \
+		--kernel $(M5_PATH)/binaries/vmlinux.arm64 \
+		--disk-image=$(M5_PATH)/disks/linaro-minimal-aarch64.img \
+		--caches \
+		--l2cache \
+		--l1i_size=32kB \
+		--l1d_size=32kB \
+		--l2_size=1MB \
+		--l2_assoc=2 \
+		--mem-type=DDR4_2400_4x16 \
+		--mem-ranks=4 \
+		--mem-size=4GB \
+		--sys-clock=1600MHz
+	#	--disk-image=$(M5_PATH)/disks/ubuntu-18.04-arm64-docker.img \
+
+
+armhe:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 311):
+	export M5_PATH=$(M5_PATH)
+	./build/ARM/gem5.opt configs/example/arm/he_fs.py --cpu "hpi" --num-cores ${N_CPU} \
+		--kernel $(M5_PATH)/binaries/vmlinux.arm64 \
+		--disk-image=$(M5_PATH)/disks/aarch64-ubuntu-trusty-headless.img
+
+# files hash-table stats:
+# Load=64/1024=6%, Rehash=0, Collisions=4/96=4%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 98 / storage = 814 B / avg = 8 B
+# current buf: size = 8162 B / used = 814 B / count = 98 / avg = 8 B
+
+# strcache performance: lookups = 181 / hit rate = 45%
+# hash-table stats:
+# Load=98/8192=1%, Rehash=0, Collisions=5/181=3%
+# Finished Make data base on Sun Aug 21 18:30:31 2022
+
+ 

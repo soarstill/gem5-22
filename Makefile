@@ -5,8 +5,8 @@
 #
 # SCONS_CMD=scons
 # for Gem5 ver. >= 21
-#SCONS_CMD=python3 /Tools/scons/scripts/scons.py
-SCONS_CMD=scons
+SCONS_CMD=python3 /Tools/scons/scripts/scons.py
+#SCONS_CMD=scons
 
 N_CPU=4
 M5_PATH=/Data/Gem5/arm

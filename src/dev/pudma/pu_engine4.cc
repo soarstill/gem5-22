@@ -138,7 +138,10 @@ PuEngine4::read(PacketPtr pkt)
         DPRINTF(PuEngine4, "PuEngine4: DONE read pa=%#x size=%d, data = %#x\n",
             pkt->getAddr(), size, pkt->getLE<uint32_t>());
 
-        std::memcpy(pkt->getPtr<uint8_t>(), &m_regMemory[offset], size);
+        uint8_t * regMemory = m_PuCmdRegs->getMemPtr();
+        //std::memcpy(&m_regMemory[offset], pkt->getPtr<uint8_t>(), size);
+
+        std::memcpy(pkt->getPtr<uint8_t>(), &regMemory[offset], size);
 
         DPRINTF(PuEngine4, "PuEngine4: DONE read pa=%#x size=%d, data = %#x\n",
             pkt->getAddr(), size, pkt->getLE<uint32_t>());
@@ -154,7 +157,7 @@ PuEngine4::write(PacketPtr pkt)
     int offset = pkt->getAddr() - this->getAddrRanges().front().start();
     int size = pkt->getSize();
 
-    pkt->makeAtomicResponse();
+    //pkt->makeAtomicResponse();
 
     //uint32_t data = pkt->getLE<uint32_t>();
     DPRINTF(PuEngine4, "PuEngine4: PKT write op pa=%#x size=%d, data = %#x\n",
@@ -182,7 +185,9 @@ PuEngine4::write(PacketPtr pkt)
 
         assert(pkt->getSize() > 0 && pkt->getSize() <= params().pio_size);
 
-        std::memcpy(&m_regMemory[offset], pkt->getPtr<uint8_t>(), size);
+        uint8_t * regMemory = m_PuCmdRegs->getMemPtr();
+        //std::memcpy(&m_regMemory[offset], pkt->getPtr<uint8_t>(), size);
+        std::memcpy(regMemory + offset, pkt->getPtr<uint8_t>(), size);
 
         DPRINTF(PuEngine4, "PuEngine4: DONE write pa=%#x size=%d,data = %#x\n",
             pkt->getAddr(), size, pkt->getLE<uint32_t>());
@@ -199,7 +204,7 @@ PuEngine4::write(PacketPtr pkt)
 
 bool PuEngine4::hookPuCmd()
 {
-    if (!m_PuCmdRegs->valid() ) return false;
+    if ( !m_PuCmdRegs->valid() ) return false;
 
     m_PuCmdRegs->setStatus(STS_READY);
 

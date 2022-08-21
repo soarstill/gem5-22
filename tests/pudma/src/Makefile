@@ -8,18 +8,17 @@ TARGET64 = $(TARGET)64-static
 TARGET64D = $(TARGET)64-dynamic
 
 BIN = ../bin/x86/linux/
-BIN2 = ../
 
 
 all: $(TARGET32) $(TARGET64) $(TARGET64D)
 
 $(TARGET64): $(SRCS) dockcross-x64
 	./dockcross-x64 bash -c '$$CC $(SRCS) -o $@ -static -O2'
-	cp $@ $(BIN); mv $@ $(BIN2)
+	cp $@ $(BIN);
 
 $(TARGET64D): $(SRCS) dockcross-x64
 	./dockcross-x64 bash -c '$$CC $(SRCS) -o $@ -O2'
-	cp $@ $(BIN); mv $@ $(BIN2)
+	cp $@ $(BIN);
 
 
 $(TARGET32): $(SRCS) dockcross-x86
@@ -36,3 +35,6 @@ dockcross-x86:
 
 clean:
 	rm -f dockcross-* $(TARGET32) $(TARGET64) $(TARGET64D) $(BIN)/*
+
+$(BIN) :
+	mkdir -p ../bin; mkdir -p ../bin/x86; mkdir -p ../bin/x86/linux
