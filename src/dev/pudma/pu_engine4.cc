@@ -154,7 +154,7 @@ PuEngine4::write(PacketPtr pkt)
     int offset = pkt->getAddr() - this->getAddrRanges().front().start();
     int size = pkt->getSize();
 
-    //pkt->makeAtomicResponse();
+    pkt->makeAtomicResponse();
 
     //uint32_t data = pkt->getLE<uint32_t>();
     DPRINTF(PuEngine4, "PuEngine4: PKT write op pa=%#x size=%d, data = %#x\n",
@@ -201,20 +201,21 @@ bool PuEngine4::hookPuCmd()
 {
     if (!m_PuCmdRegs->valid() ) return false;
 
+    m_PuCmdRegs->setStatus(STS_READY);
+
     PuCmd * puCmdClone = m_PuCmdRegs->clone();
     puCmdClone->print();
 
     DPRINTF(PuEngine4,"Hello PuCore4, from PuEngine4. PuCmd.status=%#8x\n",
                               puCmdClone->get(REG_STATUS));
 
-
     // Hook!! TODO: call with the puClone
-    if (puCmdClone->get(REG_COMMAND) != 0) {
-      m_pucore4->sayHello("Hello PuCore4", this);
+ //   if (puCmdClone->get(REG_COMMAND) != 0) {
+    m_pucore4->sayHello("Hello PuCore4", this);
       //m_pucore4->compute(puCmdClone, "PuEngine4");
 
-      return true;
-    }
+   //   return true;
+    //}
 
     return false;
 }

@@ -183,6 +183,16 @@ public:
         return m_Regs[reg] = value;
     }
 
+    void setStatus(enum PU_STATUS_TYPE status)
+    {
+        m_Regs[REG_STATUS] = status;
+    }
+
+    enum PU_STATUS_TYPE getStatus()
+    {
+        return (enum PU_STATUS_TYPE) m_Regs[REG_STATUS];
+    }
+
     int valid()
     {
         uint32_t ret = m_Regs[REG_VALID];

@@ -60,12 +60,15 @@ int testWritePuCmd(PuCmd cmd)
 
     writePuCmd(cmd);
 
+    printf("PuCmd reading\n");
 
     PuCmd ret;
     initPuCmd(ret);
-    readPuCmd(ret);
+    //do {
+        readPuCmd(ret);
+    //} while (! (ret[REG_STATUS] == STS_READY)) ;
 
-    printf("PuCmd re-read\n");
+    printf("PuCmd re-read!!\n");
     printPuCmd(ret);
 
     // success or failure of the test
@@ -87,7 +90,7 @@ int main(int argc, char* argv[])
     initPuCmd(cmd);
 
     // dummy data
-    for (int i = 0; i < sizeof(enum PU_REGS); i++) {
+    for (int i = 0; i < REG_LIMIT; i++) {
         cmd[i] = 0x100 + i;
     }
 
