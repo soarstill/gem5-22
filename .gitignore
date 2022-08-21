@@ -37,4 +37,3 @@ tests/pudma/*-static
 tests/pudma/*-dynamic
 tests/pudma/bin/x86/linux/*
 tests/pudma/src/a.out
-PUDMA*

@@ -27,7 +27,6 @@
  */
 
 #include "dev/pudma/pu_core3.hh"
-
 #include "base/trace.hh"
 #include "debug/PuEngine3.hh"
 #include "params/PuCore3.hh"

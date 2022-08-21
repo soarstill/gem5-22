@@ -107,7 +107,7 @@ system.membus.cpu_side_ports = system.puengine4.dma
 #system.puengine4.rom1 = SimpleMemory()
 
 system.puengine4.rom1_base = 0xfff0000000
-system.puengine4.rom1_size = '1MB'
+system.puengine4.rom1_size = '10MB'
 system.puengine4.rom1_file = 'configs/pudma/pumem4.py'
 system.puengine4.rom1 = SimpleMemory(image_file=system.puengine4.rom1_file,
           range=AddrRange(system.puengine4.rom1_base,
@@ -115,7 +115,7 @@ system.puengine4.rom1 = SimpleMemory(image_file=system.puengine4.rom1_file,
 system.puengine4.rom1.port = system.membus.mem_side_ports
 
 system.puengine4.rom2_base = 0xfff8000000
-system.puengine4.rom2_size = '1MB'
+system.puengine4.rom2_size = '10MB'
 system.puengine4.rom2_file = 'configs/pudma/pumem4.py'
 system.puengine4.rom2 = SimpleMemory(image_file=system.puengine4.rom2_file,
           range=AddrRange(system.puengine4.rom2_base,

@@ -27,7 +27,6 @@
  */
 
 #include "dev/pudma/pu_core.hh"
-
 #include "base/trace.hh"
 #include "debug/PUDMA.hh"
 #include "sim/sim_exit.hh"

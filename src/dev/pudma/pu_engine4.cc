@@ -32,17 +32,17 @@
 
 // main headers
 #include "dev/pudma/pu_engine4.hh"
-
+//
 #include "dev/pudma/pu_core4.hh"
-
+//
 // auto-generated headers
 #include "debug/PuEngine4.hh"
 #include "dev/pudma/pu_cmd4.hh"
 #include "params/PuEngine4.hh"
-
+//
 // C++ headers
 #include <string>
-
+//
 // gem5 headers
 #include "base/trace.hh"
 #include "dev/dma_device.hh"
