@@ -71,10 +71,12 @@ pubackup:
 	@echo "See find PUDMA-backup.tgz"
 
 purestore:
+	tar xvfz PUDMA-backup.tgz
 	cp -r PUDMA-backup/configs/pudma configs/pudma
 	cp -r PUDMA-backup/tests/pudma tests/pudma
 	cp -r PUDMA-backup/src/dev/pudma src/dev/pudma 
 	cp PUDMA-backup/Makefile ./Makefile
+	rm -r PUDMA-backup
 
 pumem4: $(PUTEST_X86)
 	./build/X86/gem5.opt \
@@ -132,7 +134,7 @@ git-soarstill:
 #
 # Build Commands
 #
-X86: build/X86/gem5.opt
+X86: 
 	$(SCONS_CMD) build/X86/gem5.opt -j8
 
 ARM:
