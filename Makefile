@@ -131,7 +131,7 @@ git-soarstill:
 #
 # Build Commands
 #
-X86: 
+X86: build/X86/gem5.opt
 	$(SCONS_CMD) build/X86/gem5.opt -j8
 
 ARM:

@@ -89,6 +89,10 @@ class PuCore4 : public SimObject
     int bufferSizeB;
     int bufferSizeC;
 
+    std::string opcode ;
+    Tick coreLatency;
+    PuEngine4 * puengine4;
+
   public:
 
    PuCore4(const PuCore4Params &p);

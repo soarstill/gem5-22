@@ -44,12 +44,15 @@ PuCore4::PuCore4(const PuCore4Params &p) :
     bufferSizeB(p.buffer_size_b),
     bufferSizeC(p.buffer_size_c)
 {
+    coreLatency = p.core_latency;
+    opcode = p.opcode;
+
     buffer = new char[bufferSize]();
     bufferA = new uint8_t[bufferSizeA]();
     bufferB = new uint8_t[bufferSizeB]();
     bufferC = new uint8_t[bufferSizeC]();
 
-    panic_if((!buffer || !bufferA || !bufferC),
+    panic_if((!buffer || !bufferA || !bufferB || !bufferC),
         "Could not allocate one of the buffers");
 
     DPRINTF(PuEngine4, "Created a PuCore4 object with buffer of %d\n",
@@ -71,6 +74,10 @@ PuCore4::startup()
 void
 PuCore4::compute(PuCmd puCmd, PuEngine4 * pue4)
 {
+    puengine4 = pue4;
+
+    puengine4->setStatus(STS_READY);
+
     DPRINTF(PuEngine4, "PuCore4: Start compute : cmd = %#x\n",\
                 puCmd.get(REG_COMMAND));
 
@@ -93,6 +100,11 @@ void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
     int size = 1024;
     bufferA[0] = 0x12;
     bufferB[0] = 0x34;
+    bufferA[1023] = 0x23;
+    bufferB[1023] = 0x46;
+
+    Addr rom1_addr = 0xfff0000000;
+    Addr rom2_addr = 0xfff8000000;
 
     auto event =  new EventFunctionWrapper(
             [this, pue4]{ OnComplete(pue4); }, "DMA Complete event");
@@ -101,18 +113,20 @@ void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
     DPRINTF(PuEngine4, "PuCore4::Start DMA... at %d \n", curTick());
 
     pue4->dmaWrite(addr, size, event, (uint8_t *)&bufferA[0]);
-    pue4->dmaRead(addr, size, event, (uint8_t *)&bufferB[0]);
+    pue4->dmaRead(rom1_addr, size, event, (uint8_t *)&bufferB[0]);
+
+    DPRINTF(PuEngine4, "PuCore4::Done DMA.. at %d \n", curTick());
 
 }
 
 void
 PuCore4::OnComplete(PuEngine4 * pue4)
 {
-
     DPRINTF(PuEngine4,
     "PuCore4::Complete Callback DMA  %s for %s A(%d) B(%d) !! at  %d\n",
-            bufferA[0]==bufferB[0] ? "SUCCESS" : "FAIL",pue4->name(),
-            bufferA[0], bufferB[0], curTick());
+            (bufferA[0]==bufferB[0] && bufferA[1023]==bufferB[1023]) ?
+                    "SUCCESS" : "FAIL", pue4->name(),
+                    bufferA[1023], bufferB[1023], curTick());
 }
 
 void

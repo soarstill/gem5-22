@@ -55,18 +55,13 @@ namespace gem5
 
 PuEngine4::PuEngine4(const Params &p) :
     DmaDevice(p),
-    m_pioSize(p.pio_size),
-    m_pioAddr(p.pio_addr),
-    m_pioDelay(p.pio_latency),
-    m_devicename(p.devicename),
-    m_pucore4(p.pucore4),
     m_range(p.range)
 {
-    m_regMemory = new uint8_t[p.pio_size]();
-    if (m_regMemory == nullptr) {
-      panic("Cannot allocate pio register memory of PuEngine4");
-    }
-    memset(m_regMemory, 0, p.pio_size);
+    m_pucore4 = p.pucore4;
+    m_pioSize = p.pio_size;
+    m_pioAddr = p.pio_addr;
+    m_pioDelay = p.pio_latency;
+    m_devicename = p.devicename;
 
     m_PuCmdRegs = new PuCmd();
 
@@ -207,6 +202,8 @@ bool PuEngine4::hookPuCmd()
     if ( !m_PuCmdRegs->valid() ) return false;
 
     m_PuCmdRegs->setStatus(STS_READY);
+    m_PuCmdRegs->print();
+
 
     PuCmd * puCmdClone = m_PuCmdRegs->clone();
     puCmdClone->print();
@@ -214,13 +211,7 @@ bool PuEngine4::hookPuCmd()
     DPRINTF(PuEngine4,"Hello PuCore4, from PuEngine4. PuCmd.status=%#8x\n",
                               puCmdClone->get(REG_STATUS));
 
-    // Hook!! TODO: call with the puClone
- //   if (puCmdClone->get(REG_COMMAND) != 0) {
     m_pucore4->sayHello("Hello PuCore4", this);
-      //m_pucore4->compute(puCmdClone, "PuEngine4");
-
-   //   return true;
-    //}
 
     return false;
 }

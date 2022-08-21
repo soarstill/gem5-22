@@ -65,11 +65,7 @@ class PuEngine4 : public DmaDevice
   private:
     /** PuEngin's computing core */
     PuCore4 * m_pucore4;
-
-    /** PuEnine4's Register Memory Area */
-    uint8_t * m_regMemory;
-
-    PuCmd * m_PuCmdRegs;
+    PuCmd * m_PuCmdRegs; // Hardware pio register for puengine4
 
   protected:
     /** User defined name (python) */
@@ -96,6 +92,17 @@ class PuEngine4 : public DmaDevice
      * @param a base address of the write
      */
     PuEngine4(const Params &p);
+
+    enum PU_STATUS_TYPE getStatus()
+    {
+      return m_PuCmdRegs->getStatus();
+    }
+
+
+    void setStatus(enum PU_STATUS_TYPE sta)
+    {
+      m_PuCmdRegs->setStatus(sta);
+    }
 
     virtual Tick read(PacketPtr pkt);
     virtual Tick write(PacketPtr pkt);
