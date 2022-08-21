@@ -150,6 +150,10 @@ PuCore4::startAdd(PuCmd *cmd, PuEngine4 *pue4)
     {
         panic("puCore4: startAdd() - invalid size (R,C should be equal");
     }
+
+    // TODO: BUSY set
+    cmd->setStatus(STS_READY), pue4->setStatus(STS_READY);
+
     processAdd(cmd,pue4);
 }
 

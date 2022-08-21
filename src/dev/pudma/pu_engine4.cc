@@ -205,12 +205,15 @@ bool PuEngine4::hookPuCmd()
     m_PuCmdRegs->setStatus(STS_READY);
     m_PuCmdRegs->print();
 
-
     PuCmd * puCmdClone = m_PuCmdRegs->clone();
     puCmdClone->print();
 
     DPRINTF(PuEngine4,"Hello PuCore4, from PuEngine4. PuCmd.status=%#8x\n",
                               puCmdClone->get(REG_STATUS));
+
+
+
+    // TODO : PuCore Busy check
 
     //m_pucore4->sayHello("Hello PuCore4", this);
     m_pucore4->compute(puCmdClone, this);

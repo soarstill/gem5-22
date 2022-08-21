@@ -178,6 +178,11 @@ int main(int argc, char* argv[])
 
     testWritePuCmd(cmd);
 
+
+
+    //TODO: ADD Command test
+    //void startAddMatrix()
+
     printf("Hello world! - PU Done!\n\n");
 
     //sleep(5); // gem5 doesn't support
