@@ -118,6 +118,8 @@ int initMatrixB()
 
 int addMatrix()
 {
+    printf("Start addMatrix() - USER\n");
+
     initMatrixA(); //"matA.bin");
     initMatrixB(); //"matB.bin");
 
@@ -129,70 +131,62 @@ int addMatrix()
             count++;
         }
     }
+    printf("End addMatrix() - USER\n");
+
     return count;
 }
 
-void startAddMatrix()
+void gem5AddMatrix(int rows, int cols)
 {
+    printf("Start gem5AddMatrix() - USER\n");
+
     PuCmd cmd;
 
     cmd[REG_COMMAND] = CMD_START;
-    cmd[REG_FLAGS] = 0xFFFF;
     cmd[REG_OPCODE] = OP_ADD;
-    cmd[REG_DATAFLAGS] = 0xFFFF;
     cmd[REG_AADDR] = 0;
-    cmd[REG_ACOLS] = COLS;
-    cmd[REG_AROWS] = ROWS;
+    cmd[REG_AROWS] = rows;
+    cmd[REG_ACOLS] = cols;
     cmd[REG_BADDR] = 0;
-    cmd[REG_BROWS] = ROWS;
-    cmd[REG_BCOLS] = COLS;
+    cmd[REG_BROWS] = rows;
+    cmd[REG_BCOLS] = cols;
     cmd[REG_CADDR] = 0;
-    cmd[REG_CROWS] = ROWS;
-    cmd[REG_CCOLS] = COLS;
+    cmd[REG_CROWS] = rows;
+    cmd[REG_CCOLS] = cols;
 
-    writePuCmd(cmd);
-}
+    writePuCmd(cmd); // xfer command
 
-void testAddMatrix()
-{
-    initMatrixA();
-    initMatrixB();
-
-    addMatrix();
-
-    startAddMatrix();
+    printf("Waiting gem5AddMatrix().. - USER\n");
+    while (readPuCmdStatus() != STS_COMPLETED);
+    printf("End gem5AddMatrix() - USER\n");
 }
 
 int main(int argc, char* argv[])
 {
     printf("Hello world! - PU\n");
+    addMatrix();
 
+/*
     PuCmd cmd ;
 
     initPuCmd(cmd);
 
-    // dummy data
+
     for (int i = 0; i < REG_LIMIT; i++) {
         cmd[i] = 0x100 + (uint32_t)i;
     }
-
+    cmd[REG_COMMAND] = CMD_START;
+    cmd[REG_OPCODE] = OP_ADD;
     testWritePuCmd(cmd);
+*/
 
+    printf("Start test Add! - PU\n");
 
+    gem5AddMatrix(100,100);
+    gem5AddMatrix(50,50);
 
-    // TODO: Make bin files for A, B -> pumem4
-    // TODO: ADD Command test
-    // testAddMatrix()
 
     printf("Hello world! - PU Done!\n\n");
-
-    //sleep(5); // gem5 doesn't support
-    //usleep(5000); // gem5 doesn't support
-    //volatile long long count = 1000000;
-    // 10000000000 = about 3 seconds in bear metal
-    //while (count--);
-
-   // printf("Hello world! - after while () - terminated. !\n\n");
 
     return 0;
 }

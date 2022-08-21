@@ -98,7 +98,6 @@ class PuEngine4 : public DmaDevice
       return m_PuCmdRegs->getStatus();
     }
 
-
     void setStatus(enum PU_STATUS_TYPE sta)
     {
       m_PuCmdRegs->setStatus(sta);

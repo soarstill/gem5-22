@@ -60,8 +60,9 @@ PuCore4::PuCore4(const PuCore4Params &p) :
     m_rom1_base = p.rom1_base;
     m_rom2_base = p.rom2_base;
 
-    DPRINTF(PuEngine4, "Created a PuCore4 object with buffers of %d, %d, %d\n",
-                        bufferSizeA, bufferSizeB, bufferSizeC);
+    DPRINTF(PuEngine4,
+        "Created a PuCore4 wh dram2, rom1, rom2 of %#x, %#x, %#x\n",
+                        m_dram2_base, m_rom1_base, m_rom2_base);
 }
 
 PuCore4::~PuCore4()
@@ -78,7 +79,6 @@ PuCore4::startup()
     // schedule(event, p.core_latency);
     DPRINTF(PuEngine4, "PuCore4: startup() called!\n");
 }
-
 
 void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
 {
@@ -105,7 +105,6 @@ void PuCore4::sayHello(std::string mesg, PuEngine4 *pue4)
 void
 PuCore4::OnComplete(PuEngine4 * pue4)
 {
-
     DPRINTF(PuEngine4,
     "PuCore4::Complete Callback DMA  %s for %s A(%d) B(%d) !! at  %d\n",
             bufferA[0]==bufferB[0] ? "SUCCESS" : "FAIL",pue4->name(),
@@ -145,22 +144,25 @@ PuCore4::startAdd(PuCmd *cmd, PuEngine4 *pue4)
 {
     DPRINTF(PuEngine4, "PuCore4::start Add!\n");
 
-    if (cmd->get(REG_AROWS) != cmd->get(REG_BROWS) ||
-                cmd->get(REG_ACOLS) != cmd->get(REG_BCOLS))
+
+    if (!( cmd->get(REG_AROWS) == cmd->get(REG_BROWS) &&
+            cmd->get(REG_ACOLS) == cmd->get(REG_BCOLS) ))
     {
-        panic("puCore4: startAdd() - invalid size (R,C should be equal");
+        DPRINTF(PuEngine4, "PuCore4::start Add - wrong ARGS.!\n");
+        cmd->setStatus(STS_ERROR), pue4->setStatus(STS_ERROR);
+        cmd->print();
+        return ;
     }
 
-    // TODO: BUSY set
-    cmd->setStatus(STS_READY), pue4->setStatus(STS_READY);
-
     processAdd(cmd,pue4);
+
+    DPRINTF(PuEngine4, "PuCore4::start Add! - Done\n");
 }
 
 void
 PuCore4::processAdd(PuCmd *cmd, PuEngine4 *pue4)
 {
-    DPRINTF(PuEngine4, "PuCore4::process Add!\n");
+    DPRINTF(PuEngine4, "PuCore4::processAdd() called!\n");
 
     Addr memA = m_rom1_base + cmd->get(REG_AADDR);
     Addr memB = m_rom2_base + cmd->get(REG_BADDR);
@@ -170,44 +172,51 @@ PuCore4::processAdd(PuCmd *cmd, PuEngine4 *pue4)
     int sizeB = cmd->get(REG_BROWS) * cmd->get(REG_BCOLS) * sizeof(double);
     int sizeC = cmd->get(REG_CROWS) * cmd->get(REG_CCOLS) * sizeof(double);
 
-
     auto event =  new EventFunctionWrapper(
             [this, pue4, cmd]{ processAdd(cmd, pue4); }, name()+".add.event");
+
+    DPRINTF(PuEngine4, "PuCore4::processAdd() : before state machine\n");
 
     if (cmd->getStatus() == STS_READY) {
         cmd->setStatus(STS_DMARD_A), pue4->setStatus(STS_DMARD_A);
 
-        DPRINTF(PuEngine4, "PuCore4::Start DMA A... at %d \n", curTick());
+        DPRINTF(PuEngine4, "PuCore4::ADD: Start DMA A... at %d \n", curTick());
         pue4->dmaRead(memA, sizeA, event, (uint8_t *)&bufferB[0]);
-        schedule (event, curTick());
+        //schedule(event, curTick()+10);
 
     } else if (cmd->getStatus() == STS_DMARD_A) {
         cmd->setStatus(STS_DMARD_B), pue4->setStatus(STS_DMARD_B);
 
-        DPRINTF(PuEngine4, "PuCore4::Start DMA B... at %d \n", curTick());
+        DPRINTF(PuEngine4, "PuCore4::ADD: Start DMA B... at %d \n", curTick());
         pue4->dmaRead(memB, sizeB, event, (uint8_t *)&bufferB[0]);
-        schedule (event, curTick());
+        //schedule(event, curTick()+10);
 
     } else if (cmd->getStatus() == STS_DMARD_B) {
         cmd->setStatus(STS_COMPUTING), pue4->setStatus(STS_COMPUTING);
-        DPRINTF(PuEngine4, "PuCore4::Start Computing at %d \n", curTick());
+        DPRINTF(PuEngine4,
+            "PuCore4::ADD: Start Computing at %d \n", curTick());
         Tick latency =  doAdd(cmd); // actually computing, return latency
         schedule(event, curTick() + latency);
 
     } else if (cmd->getStatus() == STS_COMPUTING) {
         cmd->setStatus(STS_DMAWR_C), pue4->setStatus(STS_DMAWR_C);
-        DPRINTF(PuEngine4, "PuCore4::Start DMA WR to C at %d \n", curTick());
+        DPRINTF(PuEngine4,
+            "PuCore4::ADD: Start DMA WR to C at %d \n", curTick());
         pue4->dmaWrite(memC, sizeC, event, (uint8_t *)&bufferC[0]);
-        schedule (event, curTick());
+        //schedule(event, curTick()+10);
 
     } else if (cmd->getStatus() == STS_DMAWR_C) {
         cmd->setStatus(STS_COMPLETED), pue4->setStatus(STS_COMPLETED);
-        DPRINTF(PuEngine4, "PuCore4::Complete Add  at %d \n", curTick());
+        DPRINTF(PuEngine4, "PuCore4::ADD: Complete Add at %d \n", curTick());
         // No more schedule
+        // TODO: pue4->finished();
+        DPRINTF(PuEngine4, "COMPLETE OP ADD %d \n", curTick());
+
+        //exitSimLoop("COMPLETE OP ADD"); // Once for now
 
     } else {
         cmd->setStatus(STS_ERROR), pue4->setStatus(STS_ERROR);
-        DPRINTF(PuEngine4, "PuCore4: Unimplemented status = %#x\n",
+        DPRINTF(PuEngine4, "PuCore4: Unimplemented stage = %#x\n",
                     cmd->getStatus());
     }
 }
@@ -217,27 +226,36 @@ PuCore4::doAdd(PuCmd *cmd) // C = A + B
 {
     Tick latency = 0;
 
-    DPRINTF(PuEngine4, "PuCore4: doAdd()\n");
-    cmd->print();
+    DPRINTF(PuEngine4, "PuCore4: doAdd() called!!\n");
+    //cmd->print();
+
+    int rows = cmd->get(REG_AROWS);
+    int cols = cmd->get(REG_ACOLS);
+    DPRINTF(PuEngine4, "PuCore4: doAdd(r=%d, c=%d) args!!\n", rows,cols);
+
+/*
+    //double **dbA = (double **)&bufferA[0];
+    //double **dbB = (double **)&bufferB[0];
+    //double **dbC = (double **)&bufferC[0];
 
     int count = 0;
-    int COLS = cmd->get(REG_AROWS);
-    int ROWS = cmd->get(REG_ACOLS);
-
-    double **dbA = (double **)&bufferA[0];
-    double **dbB = (double **)&bufferB[0];
-    double **dbC = (double **)&bufferC[0];
-
-    for (int i = 0; i < ROWS; i++) {
-        for (int j =0 ; j < COLS; j++) {
-            dbC[i][j] = dbA[i][j] + dbB[i][j];
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0 ; j < cols; j++) {
+            //dbC[i][j] = dbA[i][j] + dbB[i][j];
             count++;
 
-            assert(dbC[i][j] == i+j); //just for debugging
+           // assert(dbC[i][j] == i+j); //just for debugging
         }
     }
 
-    latency = count * params().fu_add_latency;
+
+    latency = count; // * params().fu_add_latency;
+*/
+
+    latency = rows * cols * params().fu_add_latency;
+
+    DPRINTF(PuEngine4, "PuCore4: doAdd() Done!! - latency=%d\n",latency);
+
     return latency;
 }
 

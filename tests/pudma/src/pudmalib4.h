@@ -106,6 +106,7 @@ enum PU_CMD_TYPE
 enum PU_STATUS_TYPE
 {
     STS_INVALID = 0,    // Not a state
+    STS_IDLE,
     STS_READY,          // Ready to get a new command
     STS_DMARD_A,     // PuCore is reading source matrices
     STS_DMARD_B,     // PuCore is reading source matrices
@@ -138,8 +139,8 @@ extern PioAddr_t writePuCmdBytes(PioAddr_t pio, int size, uint8_t * buf);
 extern uint32_t writePuCmdUint32(PioAddr_t pio, uint32_t value);
 extern uint32_t readPuCmdUint32(PioAddr_t pio);
 extern int isPuCmdValid();
-extern void unlockPuCmd();
-extern void lockPuCmd();
+extern void validatePuCmd();
+extern void invalidatePuCmd();
 void initPuCmd(PuCmd cmd);
 extern int writePuCmd(PuCmd cmd);
 extern int readPuCmd(PuCmd cmd);

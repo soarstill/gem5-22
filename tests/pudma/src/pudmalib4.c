@@ -266,6 +266,16 @@ int readPuCmd(PuCmd cmd)
     return 1;
 }
 
+enum PU_STATUS_TYPE readPuCmdStatus()
+{
+    uint32_t status;
+    PioAddr_t addr = PUREG_ADDR(REG_STATUS); // the first reg.
+
+   status = readPuCmdUint32(addr);
+
+   return (enum PU_STATUS_TYPE)status;
+}
+
 void printPuCmd(PuCmd cmd)
 {
     printf("\nBEGIN PuCmd-----------------\n");

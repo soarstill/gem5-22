@@ -75,6 +75,7 @@ PuEngine4::PuEngine4(const Params &p) :
         so->name());
     }
     */
+    setStatus(STS_IDLE); // ready to get command
 
     DPRINTF(PuEngine4, "Starts of Ranges of PuEngine4 is %s\n",
         m_range.to_string());
@@ -202,20 +203,35 @@ bool PuEngine4::hookPuCmd()
 {
     if ( !m_PuCmdRegs->valid() ) return false;
 
-    m_PuCmdRegs->setStatus(STS_READY);
-    m_PuCmdRegs->print();
+    m_PuCmdRegs->print(); // for debugging
+
+/* TODO:debugging
+    if (getStatus() == STS_COMPLETED || getStatus() == STS_ERROR) {
+        // previous job
+       setStatus(STS_IDLE);
+    }
+
+    if (getStatus() != STS_IDLE) { // init or completed
+        DPRINTF(PuEngine4,"PuEngine4 is busy. Retry again %#8x\n",
+                              m_PuCmdRegs->get(REG_STATUS));
+        return false;
+    }
+    */
+
+    setStatus(STS_READY); // now busy (not idle)
 
     PuCmd * puCmdClone = m_PuCmdRegs->clone();
-    puCmdClone->print();
+    //puCmdClone->print();
 
     DPRINTF(PuEngine4,"Hello PuCore4, from PuEngine4. PuCmd.status=%#8x\n",
                               puCmdClone->get(REG_STATUS));
 
-
-
     // TODO : PuCore Busy check
 
-    //m_pucore4->sayHello("Hello PuCore4", this);
+    // for dma test
+     //m_pucore4->sayHello("Hello PuCore4", this);
+
+    // for add
     m_pucore4->compute(puCmdClone, this);
 
     return false;

@@ -105,6 +105,7 @@ enum PU_CMD_TYPE
 enum PU_STATUS_TYPE
 {
     STS_INVALID = 0,    // Not a state
+    STS_IDLE,
     STS_READY,          // Ready to get a new command
     STS_DMARD_A,     // PuCore is reading source matrices
     STS_DMARD_B,     // PuCore is reading source matrices
@@ -158,6 +159,11 @@ public:
         }
 
         return pcmd;
+    }
+
+    void init()
+    {
+        memset(&m_Regs[0], 0, sizeof(PuCmd));
     }
 
     int updateBytes(int offset, uint8_t *data, int size) {
