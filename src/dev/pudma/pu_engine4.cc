@@ -26,21 +26,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/** @file
- * PuEngine4 implemenation
+/** @file pu_engine4.cc
+ *        PuEngine4 implemenation
  */
 
+// main headers
 #include "dev/pudma/pu_engine4.hh"
 
+#include "dev/pudma/pu_core4.hh"
+
+// auto-generated headers
+#include "debug/PuEngine4.hh"
+#include "dev/pudma/pu_cmd4.hh"
+#include "params/PuEngine4.hh"
+
+// C++ headers
 #include <string>
 
+// gem5 headers
 #include "base/trace.hh"
-#include "debug/PuEngine4.hh"
 #include "dev/dma_device.hh"
-#include "dev/pudma/pu_core4.hh"
 #include "mem/packet.hh"
 #include "mem/request.hh"
-#include "params/PuEngine4.hh"
 #include "sim/system.hh"
 
 namespace gem5
@@ -60,6 +67,8 @@ PuEngine4::PuEngine4(const Params &p) :
       panic("Cannot allocate pio register memory of PuEngine4");
     }
     memset(m_regMemory, 0, p.pio_size);
+
+    m_PuCmdRegs = new PuCmd();
 
     if (!m_pucore4) {
       panic("No pucore4 object is created. - see pumem4.py");
@@ -85,7 +94,7 @@ PuEngine4::getAddrRanges() const
     assert(m_pioSize != 0);
 
     uint64_t start = X86PIO_BASE_ADDR + params().pio_addr;
-    ranges.push_back(RangeSize(start, params().pio_addr));
+    ranges.push_back(RangeSize(start, params().pio_size));
 
     DPRINTF(PuEngine4, "Device %s range registered:  %s\n",
             name(), ranges.front().to_string());
@@ -104,7 +113,7 @@ PuEngine4::read(PacketPtr pkt)
     // uint32_t data = pkt->getLE<uint32_t>();
     DPRINTF(PuEngine4, "PuEngine4: PKT read op  pa=%#x size=%d, data = %#x\n",
            pkt->getAddr(), pkt->getSize(), pkt->getLE<uint32_t>());
-   DPRINTF(PuEngine4, "PuEngine4: REQ read  pa = %#x size=%d\n",
+    DPRINTF(PuEngine4, "PuEngine4: REQ read  pa = %#x size=%d\n",
            pkt->req->getPaddr(), pkt->req->getSize());
 
     if (params().warn_access != "") {
@@ -144,6 +153,8 @@ PuEngine4::write(PacketPtr pkt)
 {
     int offset = pkt->getAddr() - this->getAddrRanges().front().start();
     int size = pkt->getSize();
+
+    //pkt->makeAtomicResponse();
 
     //uint32_t data = pkt->getLE<uint32_t>();
     DPRINTF(PuEngine4, "PuEngine4: PKT write op pa=%#x size=%d, data = %#x\n",
@@ -188,14 +199,17 @@ PuEngine4::write(PacketPtr pkt)
 
 bool PuEngine4::hookPuCmd()
 {
-    PuCmd puCmdClone = *(PuCmd *)&m_regMemory[0];
+    if (!m_PuCmdRegs->valid() ) return false;
 
-    if (!puCmdClone.valid ) return false;
+    PuCmd * puCmdClone = m_PuCmdRegs->clone();
+    puCmdClone->print();
 
     DPRINTF(PuEngine4,"Hello PuCore4, from PuEngine4. PuCmd.status=%#8x\n",
-                              puCmdClone.status);
+                              puCmdClone->get(REG_STATUS));
 
-    if (puCmdClone.cmd != 0) { // Hook!! TODO: call with the puClone
+
+    // Hook!! TODO: call with the puClone
+    if (puCmdClone->get(REG_COMMAND) != 0) {
       m_pucore4->sayHello("Hello PuCore4", this);
       //m_pucore4->compute(puCmdClone, "PuEngine4");
 

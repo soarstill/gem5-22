@@ -82,5 +82,6 @@
     },
     "python.analysis.extraPaths": [
         "./build/X86/python"
-    ]
+    ],
+    "cmake.configureOnOpen": false
 }

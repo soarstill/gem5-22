@@ -93,9 +93,7 @@ void testHookPuCmd(PuCmd * cmd)
 
 int testWritePuStatus(uint32_t status)
 {
-    writePuStatus(status); // Valid dma command
-    int retStatus = readPuStatus();
-
+    int retStatus = writePuStatus(status); // Valid dma command
     printf("testWritePuStatus : %s\n",
         (status == retStatus) ? "SUCCESS" : "FAIL");
 
@@ -125,13 +123,8 @@ int main(int argc, char* argv[])
 
     printf("Hello world! - PU Done!\n\n");
 
-    //sleep(5); // gem5 doesn't support
-    //usleep(5000); // gem5 doesn't support
-    //volatile long long count = 1000000;
-    // 10000000000 = about 3 seconds in bear metal
-    //while (count--);
-
-   printf("Hello world! - after while () - terminated. !\n\n");
+    //sleep(5); // gem5 ㄴdoesn't support
+    printf("Hello world! - After sleep() - terminated. !\n\n");
 
     return 0;
 }

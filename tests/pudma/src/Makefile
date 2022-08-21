@@ -1,5 +1,5 @@
-SRCS = putest.c
-OBJS = putest.o
+SRCS = putest2.c pudmalib2.c
+#OBJS = putest2.o pudmalib2.o
 
 TARGET = putest
 
@@ -18,7 +18,7 @@ $(TARGET64): $(SRCS) dockcross-x64
 	cp $@ $(BIN); mv $@ $(BIN2)
 
 $(TARGET64D): $(SRCS) dockcross-x64
-	./dockcross-x64 bash -c '$$CC $(SRCS) -o $@'
+	./dockcross-x64 bash -c '$$CC $(SRCS) -o $@ -O2'
 	cp $@ $(BIN); mv $@ $(BIN2)
 
 

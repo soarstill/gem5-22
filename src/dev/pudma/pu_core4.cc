@@ -71,7 +71,8 @@ PuCore4::startup()
 void
 PuCore4::compute(PuCmd puCmd, PuEngine4 * pue4)
 {
-    DPRINTF(PuEngine4, "PuCore4: Start compute : cmd = %#x\n", puCmd.cmd);
+    DPRINTF(PuEngine4, "PuCore4: Start compute : cmd = %#x\n",\
+                puCmd.get(REG_COMMAND));
 
     message = "Request Compute from" + pue4->name() +  "!!";
 

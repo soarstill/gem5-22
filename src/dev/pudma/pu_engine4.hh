@@ -37,6 +37,7 @@
 // main headers
 #include "dev/dma_device.hh"
 #include "dev/io_device.hh"
+#include "dev/pudma/pu_cmd4.hh"
 #include "dev/pudma/pu_core4.hh"
 
 // generated headers
@@ -52,35 +53,10 @@ namespace gem5
 {
   #define X86PIO_BASE_ADDR (0x8000000000000000)
 
-  /**
-   *  PuCmd : MUST BE the SAME structure with USER programs' PuCmd (x86 only)
-   *  Information for an PU+DMA operation
-   *  Play a role of the device register structure
-   */
-  struct PuCmd
-  {
-      uint32_t valid; // 0 : invalid, 1: valid
-      uint32_t status;
-      // status 0: idle, 1: ready, 2: start-moving cmdata,
-      // 3: in-computing 4: moving to mem 5: DONE
-      uint32_t cmd;
-      // cmd = 0: just send info, 1: start compute,
-      // 2: abort  3: report status
-      uint32_t flags; // configuration flags
-      uint32_t opcode; // 0: no op, 1: add 2: sub, 3: mul
-      uint32_t addrA; // A buffer physical memory address
-      uint32_t addrB; // B buffer physical memory address
-      uint32_t addrC; // C buffer physical memory address
-      uint32_t sizeA; // size of A
-      uint32_t sizeB; // size of B
-      uint32_t sizeC; // size of C
-  };
-
 /**
- * PuEngine4
- * This device just panics when accessed. It is supposed to warn
- * the user that the kernel they are running has unsupported
- * options (i.e. frame buffer)
+ * @brief PuEngine4 - Controller for PuCore.
+ *      It inherits DmaDevice that inherits PioDevice,
+ *      which has port "dma" and "pio"
  */
 class PuEngine4 : public DmaDevice
 {
@@ -92,6 +68,8 @@ class PuEngine4 : public DmaDevice
 
     /** PuEnine4's Register Memory Area */
     uint8_t * m_regMemory;
+
+    PuCmd * m_PuCmdRegs;
 
   protected:
     /** User defined name (python) */
