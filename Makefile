@@ -59,6 +59,22 @@ M5OUT_PUTEST = ./m5out/pudma
 $(PUTEST_X86) : $(PUTEST_SRC)/$(PUTEST).c
 	cd $(PUTEST_SRC); make -f Makefile.x86
 
+pubackup:
+	mkdir -p PUDMA-backup; tar cfz PUDMA-backup.old PUDMA-backup
+	mkdir -p PUDMA-backup/configs; cp -r configs/pudma PUDMA-backup/configs/.
+	mkdir -p PUDMA-backup/tests;  cp -r tests/pudma PUDMA-backup/tests/.
+	mkdir -p PUDMA-backup/src; mkdir -p PUDMA-backup/src/dev; 
+	cp -r src/dev/pudma PUDMA-backup/src/dev/. 
+	cp Makefile PUDMA-backup/.
+	tar cvfz PUDMA-backup.tgz PUDMA-backup
+	@echo "See directory PUDMA-backup and PUDMA-backup.tgz"
+
+purestore:
+	cp -r PUDMA-backup/configs/pudma configs/pudma
+	cp -r PUDMA-backup/tests/pudma tests/pudma
+	cp -r PUDMA-backup/src/dev/pudma src/dev/pudma 
+	cp PUDMA-backup/Makefile ./Makefile
+
 pumem4: $(PUTEST_X86)
 	./build/X86/gem5.opt \
 	   	--outdir=$(M5OUT_PUTEST)/pumem4 \
